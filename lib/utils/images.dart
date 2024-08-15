@@ -1,0 +1,31 @@
+class AppImages {
+  static const String b1 = 'assets/images/icons/b1.png';
+  static const String b2 = 'assets/images/icons/b2.png';
+  static const String b3 = 'assets/images/icons/b3.png';
+  static const String b4 = 'assets/images/icons/b4.png';
+  static const String b5 = 'assets/images/icons/b5.png';
+  static const String back = 'assets/images/icons/back.png';
+  static const String badge = 'assets/images/icons/badge.png';
+  static const String brokenShell = 'assets/images/icons/shell.png';
+  static const String background = 'assets/images/background/bg.jpeg';
+  static const String clock = 'assets/images/icons/clock.png';
+  static const String combo = 'assets/images/icons/combo.png';
+  static const String exit = 'assets/images/icons/exit.png';
+  static const String heart = 'assets/images/icons/heart.png';
+  static const String lock = 'assets/images/icons/lock.png';
+  static const String musicOff = 'assets/images/icons/m-off.png';
+  static const String musicOn = 'assets/images/icons/m-on.png';
+  static const String next = 'assets/images/icons/next.png';
+  static const String pauseCard = 'assets/images/icons/pause card.png';
+  static const String pause = 'assets/images/icons/pause.png';
+  static const String pinkStar = 'assets/images/icons/pink-star.png';
+  static const String play = 'assets/images/icons/play.png';
+  static const String refresh = 'assets/images/icons/refresh.png';
+  static const String restart = 'assets/images/icons/restart.png';
+  static const String resume = 'assets/images/icons/resume.png';
+  static const String rules = 'assets/images/icons/rules.png';
+  static const String soundOn = 'assets/images/icons/s-on.png';
+  static const String soundOff = 'assets/images/icons/s-off.png';
+  static const String whiteStar = 'assets/images/icons/white-star.png';
+  static const String win = 'assets/images/icons/win.png';
+}

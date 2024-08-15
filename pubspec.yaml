@@ -1,0 +1,30 @@
+name: wingscape_puzzle
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.2.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get:
+  shared_preferences:
+  audioplayers: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/sounds/
+    - assets/images/icons/
+    - assets/images/background/
+  fonts:
+    - family: Lobster
+      fonts:
+        - asset: assets/font/Lobster-Regular.ttf
