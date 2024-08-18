@@ -20,7 +20,7 @@ class GameService {
     } else {
       game = GameModel(
               levels: List.generate(
-                100,
+                400,
                 (index) => Level(
                     isLocked: index > 1,
                     isCompleted: false,

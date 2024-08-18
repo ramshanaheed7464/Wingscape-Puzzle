@@ -12,6 +12,7 @@ dependencies:
   get:
   shared_preferences:
   audioplayers: ^1.1.0
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:

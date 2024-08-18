@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
 import 'package:wingscape_puzzle/services/game_service.dart';
@@ -13,7 +15,7 @@ import 'package:wingscape_puzzle/utils/images.dart';
 import 'package:wingscape_puzzle/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'body.dart';
+import 'board.dart';
 
 class GameMode extends StatefulWidget {
   const GameMode({super.key, required this.currentLevel});
@@ -53,74 +55,92 @@ class _GameModeState extends State<GameMode> {
   }
 
   void initializeContainers() {
-    if (currentLevel.number == 0) {
-      return;
-    }
-
     int levelGroup = (currentLevel.number - 1) ~/ 5;
-    int baseContainerCount = 10 + (levelGroup * 15);
-    int basePoints = 1000 + (levelGroup * 500);
 
     switch (currentLevel.number % 5) {
-      case 1: // Levels 1, 6, 11, 16, ...
+      case 0:
+        containerCounts[containerImages[0]] = 10 + (levelGroup * 15);
+        containerCounts[containerImages[1]] = 10 + (levelGroup * 15);
+        containerCounts[containerImages[2]] = 10 + (levelGroup * 15);
+        containerCounts[containerImages[3]] = 10 + (levelGroup * 15);
+        containerCounts[containerImages[4]] = 10;
+        break;
+      case 1:
         containerCounts[containerImages[0]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[1]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[2]] = 10 + (levelGroup * 15);
         containerCounts[containerImages[3]] = 10 + (levelGroup * 15);
-        containerCounts[containerImages[4]] = 0; // Not needed in this level
-        currentLevel.points = 0; // No points required
+        containerCounts[containerImages[4]] = 0;
         break;
-      case 2: // Levels 2, 7, 12, 17, ...
+      case 2:
         containerCounts[containerImages[0]] = 15 + (levelGroup * 15);
         containerCounts[containerImages[1]] = 15 + (levelGroup * 15);
         containerCounts[containerImages[2]] = 15 + (levelGroup * 15);
         containerCounts[containerImages[3]] = 10 + (levelGroup * 15);
         containerCounts[containerImages[4]] = 10 + (levelGroup * 15);
-        currentLevel.points = 0; // No points required
         break;
-      case 3: // Levels 3, 8, 13, 18, ...
+      case 3:
         containerCounts[containerImages[0]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[1]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[2]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[3]] = 20 + (levelGroup * 15);
         containerCounts[containerImages[4]] = 10 + (levelGroup * 15);
-        currentLevel.points = 0; // No points required
         break;
-      case 4: // Levels 4, 9, 14, 19, ...
-        currentLevel.points = basePoints; // Collect points only
-        containerCounts = {}; // No symbols required
+      case 4:
+        containerCounts[containerImages[0]] = 25 + (levelGroup * 15);
+        containerCounts[containerImages[1]] = 25 + (levelGroup * 15);
+        containerCounts[containerImages[2]] = 25 + (levelGroup * 15);
+        containerCounts[containerImages[3]] = 30 + (levelGroup * 15);
+        containerCounts[containerImages[4]] = 35 + (levelGroup * 15);
         break;
-      case 0: // Levels 5, 10, 15, 20, ...
-        currentLevel.points = basePoints + 500; // Points plus symbols
-        for (String image in containerImages) {
-          containerCounts[image] = baseContainerCount;
-        }
+      case 5:
+        containerCounts[containerImages[0]] = 40 + (levelGroup * 15);
+        containerCounts[containerImages[1]] = 45 + (levelGroup * 15);
+        containerCounts[containerImages[2]] = 40 + (levelGroup * 15);
+        containerCounts[containerImages[3]] = 30 + (levelGroup * 15);
+        containerCounts[containerImages[4]] = 35 + (levelGroup * 15);
         break;
     }
   }
 
   Widget buildContainerStack(String image) {
     return Stack(
+      clipBehavior: Clip.none,
       children: [
-        Image.asset(
-          image,
-          width: Get.width * 0.13,
-          height: Get.height * 0.08,
+        Container(
+          width: Get.width * 0.12,
+          height: Get.width * 0.12,
+          decoration: const BoxDecoration(
+            color: AppTheme.peach,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: SvgPicture.asset(
+              image,
+              width: Get.width * 0.09,
+              height: Get.width * 0.09,
+            ),
+          ),
         ),
         Positioned(
-          top: Get.height * 0.03,
-          left: Get.width * 0.06,
+          bottom: -Get.width * 0.02,
+          right: -Get.width * 0.02,
           child: containerCounts[image]! > 0
               ? CustomContainer(number: containerCounts[image]!)
               : Container(
-                  width: Get.width * 0.06,
-                  height: Get.height * 0.05,
-                  decoration: const BoxDecoration(
-                    color: AppTheme.peach,
+                  width: Get.width * 0.08,
+                  height: Get.width * 0.08,
+                  decoration: BoxDecoration(
+                    color: AppTheme.pink,
                     shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: Center(
-                    child: Image.asset('assets/images/icons/complete.png'),
+                    child: SvgPicture.asset(
+                      AppImages.badge,
+                      width: Get.width * 0.04,
+                      height: Get.width * 0.04,
+                    ),
                   ),
                 ),
         ),
@@ -142,7 +162,12 @@ class _GameModeState extends State<GameMode> {
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: Colors.black,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              title: const StyledText(text: 'Game', fontSize: 42),
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+            ),
             extendBodyBehindAppBar: true,
             body: Stack(
               children: [
@@ -150,148 +175,102 @@ class _GameModeState extends State<GameMode> {
                   child: Image.asset(
                     AppImages.background,
                     fit: BoxFit.cover,
-                    opacity: const AlwaysStoppedAnimation(0.6),
+                    opacity: const AlwaysStoppedAnimation(0.9),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 20),
+                  padding: EdgeInsets.fromLTRB(16, context.width * 0.2, 16, 16),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 50,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppTheme.peach,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppImages.clock,
+                                      width: context.width * 0.2,
+                                      height: context.width * 0.2,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      formatTime(currentLevel.remainingTime),
+                                      style: AppTheme.textTheme.copyWith(
+                                          color: AppTheme.white, fontSize: 24),
+                                    )
+                                  ],
                                 ),
-                                child: Image.asset(AppImages.clock),
-                              ),
-                              const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  StyledText(
-                                    text:
-                                        formatTime(currentLevel.remainingTime),
-                                    fontSize: 20,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Container(
-                                    width: 120,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      color: AppTheme.pink,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: LinearProgressIndicator(
-                                        value: calculateProgressValue(),
-                                        backgroundColor: Colors.grey,
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                                AppTheme.grey),
-                                      ),
+                                SizedBox(
+                                  width: 120,
+                                  height: 12,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: LinearProgressIndicator(
+                                      value: calculateProgressValue(),
+                                      backgroundColor: Colors.grey,
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                              AppTheme.pink),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          // Column(
-                          //   children: [
-                          //     StyledText(
-                          //       text: 'score'.tr,
-                          //       fontSize: 20,
-                          //     ),
-                          //     Container(
-                          //       width: Get.width * 0.31,
-                          //       height: Get.height * 0.06,
-                          //       decoration: BoxDecoration(
-                          //         gradient: AppTheme.border,
-                          //         shape: BoxShape.rectangle,
-                          //         borderRadius: BorderRadius.circular(22),
-
-                          //       ),
-                          //       child: Center(
-                          //         child: Container(
-                          //           width: Get.width * 0.29,
-                          //           height: Get.height * 0.05,
-                          //           decoration: BoxDecoration(
-                          //               gradient: AppTheme.green,
-                          //               shape: BoxShape.rectangle,
-                          //               borderRadius:
-                          //                   BorderRadius.circular(18)),
-                          //           child: Center(
-                          //               child: StyledText(
-                          //                   text: '${currentLevel.score}',
-                          //                   fontSize: 20)),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // )
-                        ],
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                const StyledText(text: 'Score', fontSize: 32),
+                                Container(
+                                  width: Get.width * 0.31,
+                                  height: Get.height * 0.06,
+                                  decoration: BoxDecoration(
+                                    gradient: AppTheme.line,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(22),
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      width: Get.width * 0.29,
+                                      height: Get.height * 0.05,
+                                      decoration: BoxDecoration(
+                                          gradient: AppTheme.pinkGradient,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(18)),
+                                      child: Center(
+                                          child: Text(
+                                        '${currentLevel.score}',
+                                        style: AppTheme.textTheme
+                                            .copyWith(fontSize: 24),
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child:
-                                    StyledText(text: 'summ'.tr, fontSize: 20),
-                              ),
-                              // Container(
-                              //   width: Get.width * 0.25,
-                              //   height: Get.height * 0.05,
-                              //   decoration: BoxDecoration(
-                              //     shape: BoxShape.rectangle,
-                              //     border: Border.all(
-                              //         color: AppTheme.greenBorder, width: 3),
-                              //     borderRadius: BorderRadius.circular(22),
-                              //     boxShadow: const [
-                              //       BoxShadow(
-                              //         color: AppTheme.greenShadow,
-                              //         spreadRadius: 1,
-                              //         offset: Offset(0, 2),
-                              //       ),
-                              //     ],
-                              //   ),
-                              //   child: Center(
-                              //       child: StyledText(
-                              //           text: ((currentLevel.number % 5 !=
-                              //                       4 &&
-                              //                   currentLevel.number % 5 != 0))
-                              //               ? '0'
-                              //               : currentLevel.points.toString(),
-                              //           fontSize: 20)),
-                              // ),
-                            ],
-                          ),
-                          if ((currentLevel.number % 5 != 4 &&
-                              currentLevel.number != 0))
-                            Row(
-                              children: containerImages
-                                  .map((image) => buildContainerStack(image))
-                                  .toList(),
-                            ),
-                        ],
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: containerImages
+                            .map((image) => Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: Get.width * 0.01),
+                                  child: buildContainerStack(image),
+                                ))
+                            .toList(),
                       ),
                       Expanded(
                         child: Center(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.symmetric(vertical: 16),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             decoration: BoxDecoration(
@@ -310,68 +289,54 @@ class _GameModeState extends State<GameMode> {
                           ),
                         ),
                       ),
-                      SizedBox(height: Get.height * 0.13),
+                      SizedBox(height: context.width * 0.12)
                     ],
                   ),
                 ),
                 Positioned(
-                  bottom: Get.height * 0.07,
-                  left: Get.width * 0.04,
+                  bottom: context.width * 0.05,
+                  right: Get.width * 0.05,
                   child: GestureDetector(
                     onTap: () {
-                      controller.playSound(Sounds.refresh);
+                      // controller.playSound(Sounds.refresh);
                       if (_gameBoardKey.currentState != null) {
                         _gameBoardKey.currentState!.refreshBoard();
                       }
                       reduceTimeByFiveSeconds();
                     },
                     child: Container(
-                      width: Get.width * 0.15,
-                      height: Get.height * 0.1,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: Get.width * 0.13,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(child: Image.asset(AppImages.refresh)),
-                        ),
-                      ),
+                      width: context.width * 0.15,
+                      height: context.width * 0.15,
+                      decoration: BoxDecoration(
+                          gradient: AppTheme.purpleGradient,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(child: SvgPicture.asset(AppImages.refresh)),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 5,
+                  bottom: context.width * 0.05,
                   left: Get.width * 0.05,
                   child: GestureDetector(
                     onTap: () {
-                      controller.playSound(Sounds.pause);
+                      // controller.playSound(Sounds.pause);
                       setState(() {
                         currentLevel.isStopped = true;
                         pauseTimer();
                       });
                     },
                     child: Container(
-                      width: 40,
-                      height: 40,
+                      width: context.width * 0.15,
+                      height: context.width * 0.15,
                       decoration: BoxDecoration(
-                        // border:
-                        //     Border.all(color: AppTheme.greenBorder, width: 1),
-
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(child: Image.asset(AppImages.pause)),
+                          gradient: AppTheme.purpleGradient,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(child: SvgPicture.asset(AppImages.pause)),
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: -Get.height * 0.08,
-                  right: Get.width * 0.02,
-                  child: Image.asset(AppImages.pauseCard),
-                )
               ],
             ),
           ),
@@ -454,7 +419,7 @@ class _GameModeState extends State<GameMode> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          controller.playSound(Sounds.button);
+                          // controller.playSound(Sounds.button);
                           setState(() {
                             currentLevel.isStopped = false;
                             restartLevel();
@@ -469,7 +434,7 @@ class _GameModeState extends State<GameMode> {
                                 color: AppTheme.purpleBorder, width: 3),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Image.asset(AppImages.restart),
+                          child: SvgPicture.asset(AppImages.restart),
                         ),
                       ),
                     ),
@@ -478,7 +443,7 @@ class _GameModeState extends State<GameMode> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          controller.playSound(Sounds.button);
+                          // controller.playSound(Sounds.button);
 
                           setState(() {
                             currentLevel.isStopped = false;
@@ -494,7 +459,7 @@ class _GameModeState extends State<GameMode> {
                                 color: AppTheme.purpleBorder, width: 3),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Image.asset(AppImages.resume),
+                          child: SvgPicture.asset(AppImages.resume),
                         ),
                       ),
                     ),
@@ -503,7 +468,7 @@ class _GameModeState extends State<GameMode> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          controller.playSound(Sounds.button);
+                          // controller.playSound(Sounds.button);
 
                           currentLevel.isStopped = false;
                           currentLevel.isComplete = true;
@@ -518,12 +483,24 @@ class _GameModeState extends State<GameMode> {
                                 color: AppTheme.purpleBorder, width: 3),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Image.asset(AppImages.exit),
+                          child: SvgPicture.asset(AppImages.exit),
                         ),
                       ),
                     ),
                   ],
-                )
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(pi),
+                    child: SvgPicture.asset(
+                      AppImages.bibble,
+                      height: context.width * 0.5,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -632,7 +609,7 @@ class _GameModeState extends State<GameMode> {
         containerCounts[nonWildSymbol] = (max(0, c - toRemove));
         if (containerCounts[nonWildSymbol] == 0 &&
             controller.game.value.isSoundOn) {
-          controller.playSound(Sounds.target);
+          // controller.playSound(Sounds.target);
         }
       }
 
@@ -670,11 +647,11 @@ class _GameModeState extends State<GameMode> {
       // Check if any of the matched images is a clock
       if (matchedImages.contains(AppImages.clock)) {
         if (controller.game.value.isSoundOn) {
-          controller.playSound(Sounds.clock);
+          // controller.playSound(Sounds.clock);
         }
       } else {
         if (controller.game.value.isSoundOn) {
-          controller.playSound(Sounds.combo);
+          // controller.playSound(Sounds.combo);
         }
       }
 
@@ -730,7 +707,7 @@ class _GameModeState extends State<GameMode> {
     }
 
     if (currentLevel.allTargetsAchieved) {
-      controller.playSound(Sounds.levelComplete);
+      // controller.playSound(Sounds.levelComplete);
 
       if (countdownTimer != null) {
         countdownTimer?.cancel();
@@ -770,7 +747,7 @@ class _GameModeState extends State<GameMode> {
         controller.onLevelCompleted(currentLevel);
       }
 
-      controller.playSound(Sounds.timeOver);
+      // controller.playSound(Sounds.timeOver);
     });
   }
 

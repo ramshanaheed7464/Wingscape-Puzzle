@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class LevelCard extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         0, 12.0, 0, 0),
-                                    child: Image.asset(
+                                    child: SvgPicture.asset(
                                       'assets/images/icons/clock.png',
                                       width: 60,
                                       height: 60,
@@ -93,7 +94,7 @@ class LevelCard extends StatelessWidget {
                           left: -20,
                           bottom: 90,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               stars >= 1
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
@@ -107,7 +108,7 @@ class LevelCard extends StatelessWidget {
                           right: -20,
                           bottom: 90,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               stars >= 3
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
@@ -122,7 +123,7 @@ class LevelCard extends StatelessWidget {
                           right: 25,
                           bottom: 100,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               stars >= 2
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
@@ -142,7 +143,7 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              controller.playSound(Sounds.button);
+                              // controller.playSound(Sounds.button);
                               onPlay();
                             },
                             child: Container(
@@ -156,7 +157,7 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Image.asset(AppImages.play),
+                              child: SvgPicture.asset(AppImages.play),
                             ),
                           ),
                         ),
@@ -165,7 +166,7 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              controller.playSound(Sounds.button);
+                              // controller.playSound(Sounds.button);
                               onRestart();
                             },
                             child: Container(
@@ -179,7 +180,7 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Image.asset(AppImages.restart),
+                              child: SvgPicture.asset(AppImages.restart),
                             ),
                           ),
                         ),
@@ -188,7 +189,7 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              controller.playSound(Sounds.button);
+                              // controller.playSound(Sounds.button);
                               onExit();
                             },
                             child: Container(
@@ -202,7 +203,7 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Image.asset(AppImages.exit),
+                              child: SvgPicture.asset(AppImages.exit),
                             ),
                           ),
                         ),
@@ -221,8 +222,8 @@ class LevelCard extends StatelessWidget {
                 child: Transform.rotate(
                   angle: 20 * pi / 180,
                   child: ClipRect(
-                    child: Image.asset(
-                      AppImages.win,
+                    child: SvgPicture.asset(
+                      AppImages.sparkle,
                       height: imageHeight,
                       fit: BoxFit.fill,
                     ),

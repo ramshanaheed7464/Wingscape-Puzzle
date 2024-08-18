@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:flutter/material.dart';
@@ -94,8 +95,8 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         0, 12.0, 0, 0),
-                                    child: Image.asset(
-                                      'assets/images/icons/clock.png',
+                                    child: SvgPicture.asset(
+                                      AppImages.clock,
                                       width: 60,
                                       height: 60,
                                     ),
@@ -117,7 +118,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           left: -20,
                           bottom: 90,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               AppImages.whiteStar,
                               height: Get.height * 0.1,
                               width: Get.width * 0.17,
@@ -129,7 +130,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           right: -20,
                           bottom: 90,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               AppImages.whiteStar,
                               height: Get.height * 0.1,
                               width: Get.width * 0.17,
@@ -142,7 +143,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           right: 25,
                           bottom: 100,
                           child: ClipRRect(
-                            child: Image.asset(
+                            child: SvgPicture.asset(
                               AppImages.whiteStar,
                               height: Get.height * 0.13,
                               width: Get.width * 0.15,
@@ -160,7 +161,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              controller.playSound(Sounds.button);
+                              // controller.playSound(Sounds.button);
                               widget.onRestart();
                             },
                             child: Container(
@@ -174,7 +175,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Image.asset(AppImages.restart),
+                              child: SvgPicture.asset(AppImages.restart),
                             ),
                           ),
                         ),
@@ -183,7 +184,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              controller.playSound(Sounds.button);
+                              // controller.playSound(Sounds.button);
                               widget.onExit();
                             },
                             child: Container(
@@ -197,7 +198,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Image.asset(AppImages.exit),
+                              child: SvgPicture.asset(AppImages.exit),
                             ),
                           ),
                         ),
@@ -220,11 +221,10 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                     child: Transform.rotate(
                       angle: 40 * pi / 180,
                       child: ClipRect(
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           AppImages.heart,
                           height: 50,
                           fit: BoxFit.fill,
-                          opacity: const AlwaysStoppedAnimation(0.5),
                         ),
                       ),
                     ),
@@ -244,9 +244,8 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                     child: Transform.rotate(
                       angle: 70 * pi / 180,
                       child: ClipRect(
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           AppImages.heart,
-                          opacity: const AlwaysStoppedAnimation(0.8),
                           height: 75,
                         ),
                       ),
@@ -266,7 +265,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                     child: Transform.rotate(
                       angle: pi / 180,
                       child: ClipRect(
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           AppImages.heart,
                           height: 100,
                           fit: BoxFit.fill,
@@ -280,8 +279,8 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
             Positioned(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  AppImages.brokenShell,
+                child: SvgPicture.asset(
+                  AppImages.shell,
                   height: 100,
                   fit: BoxFit.fill,
                 ),

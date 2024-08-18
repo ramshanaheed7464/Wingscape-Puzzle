@@ -6,23 +6,23 @@ import 'package:get/get.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
 
 class GameStateController extends GetxController {
-  late SoundManager soundManager;
+  // late SoundManager soundManager;
   Rx<GameModel> get game => GameService.game;
   @override
   void onInit() {
     super.onInit();
-    soundManager = SoundManager(
-      isSoundOn: game.value.isSoundOn == true,
-      isMusicOn: game.value.isMusicOn == true,
-    );
+    // soundManager = SoundManager(
+    //   isSoundOn: game.value.isSoundOn == true,
+    //   isMusicOn: game.value.isMusicOn == true,
+    // );
   }
 
-  void toggleMusic() {
-    game.value.isMusicOn = !game.value.isMusicOn;
-    soundManager.toggleMusic(game.value.isMusicOn);
-    update();
-    saveGameState();
-  }
+  // void toggleMusic() {
+  //   game.value.isMusicOn = !game.value.isMusicOn;
+  //   soundManager.toggleMusic(game.value.isMusicOn);
+  //   update();
+  //   saveGameState();
+  // }
 
   void switchToEnglish() {
     game.value.isEnSelected = true;
@@ -42,11 +42,11 @@ class GameStateController extends GetxController {
     await GameService.saveGameDetails();
   }
 
-  void playSound(String asset) {
-    if (game.value.isSoundOn) {
-      soundManager.playSound(asset);
-    }
-  }
+  // void playSound(String asset) {
+  //   if (game.value.isSoundOn) {
+  //     soundManager.playSound(asset);
+  //   }
+  // }
 
   void onLevelCompleted(Level level) {
     GameService.game.value.levels[level.number] = level;

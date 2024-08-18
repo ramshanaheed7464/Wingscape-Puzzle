@@ -10,16 +10,27 @@ class CustomContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Get.width * 0.06,
-      height: Get.height * 0.05,
-      decoration: const BoxDecoration(
-        color: AppTheme.peach,
+      width: Get.width * 0.08,
+      height: Get.width * 0.08,
+      decoration: BoxDecoration(
+        color: AppTheme.pink,
         shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
       ),
       child: Center(
-        child: Text(
-          number.toString(),
-          style: AppTheme.textTheme,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Padding(
+            padding: EdgeInsets.all(Get.width * 0.005),
+            child: Text(
+              number.toString(),
+              style: TextStyle(
+                fontSize: Get.width * 0.04,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );

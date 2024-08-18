@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:wingscape_puzzle/widgets/text_widget.dart';
@@ -21,7 +22,6 @@ class _RuleScreenState extends State<RuleScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -30,28 +30,28 @@ class _RuleScreenState extends State<RuleScreen> {
         centerTitle: true,
         leading: GestureDetector(
           onTap: () {
-            gameStateController.playSound(Sounds.button);
+            // gameStateController.playSound(Sounds.button);
             Get.back();
           },
           child: Container(
-              margin: const EdgeInsets.fromLTRB(8, 2, 0, 2),
-              width: screenWidth * 0.03,
-              height: screenHeight * 0.03,
-              decoration: BoxDecoration(
-                  gradient: AppTheme.purpleGradient,
-                  border: Border.all(color: AppTheme.purpleBorder, width: 3),
-                  borderRadius: BorderRadius.circular(12)),
-              child: Image.asset(AppImages.back)),
+            margin: const EdgeInsets.fromLTRB(8, 2, 0, 2),
+            width: screenWidth * 0.03,
+            height: screenHeight * 0.03,
+            decoration: BoxDecoration(
+              gradient: AppTheme.purpleGradient,
+              border: Border.all(color: AppTheme.purpleBorder, width: 3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: SvgPicture.asset(AppImages.back),
+          ),
         ),
       ),
       body: Stack(
-        clipBehavior: Clip.none,
         children: [
           Positioned.fill(
             child: Image.asset(
               AppImages.background,
               fit: BoxFit.cover,
-              opacity: const AlwaysStoppedAnimation(0.6),
             ),
           ),
           SafeArea(
@@ -59,31 +59,47 @@ class _RuleScreenState extends State<RuleScreen> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      't1'.tr,
-                      style: AppTheme.textTheme,
-                    ),
-                    Text(
-                      't2'.tr,
-                      style: AppTheme.textTheme,
-                    ),
-                    Text(
-                      't3'.tr,
-                      style: AppTheme.textTheme,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      't4'.tr,
-                      style: AppTheme.textTheme,
-                    ),
-                    Text(
-                      't5'.tr,
-                      style: AppTheme.textTheme,
-                    ),
-                  ],
+                child: RichText(
+                  text: TextSpan(
+                    style: AppTheme.textTheme,
+                    children: [
+                      TextSpan(
+                          text: 'Combo Symbol:\n',
+                          style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'The Combo Symbol is uniquely versatile, allowing it to match with any other symbol on the board. When combined with another symbol, it takes on that symbol\'s properties, enabling successful matches.\n\n'),
+                      TextSpan(
+                          text: 'Clock Symbol:\n',
+                          style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'The Clock Symbol provides additional time when matched, helping to extend the game duration. Use this symbol strategically to increase your available time and boost your score.\n\n'),
+                      TextSpan(
+                          text: 'Standard Symbols:\n',
+                          style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'Standard symbols can only be matched with identical symbols. These symbols cannot be combined with different types, except when paired with the Combo Symbol.\n\n'),
+                      TextSpan(
+                          text: 'Line Matching:\n',
+                          style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'Instead of swapping symbols, players draw lines to connect and match them. Create matches by drawing a continuous line that links at least three identical symbols. Matches can form in straight lines, L-shapes, or other connected patterns, as long as the line remains unbroken.\n\n'),
+                      TextSpan(
+                          text: 'Targets and Time Management:\n',
+                          style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'Each level has specific targets that must be completed within a time limit. The game concludes when the timer runs out, so focus on achieving your targets quickly and efficiently. Matching the Clock Symbol can extend your time, giving you a better chance to meet your goals.\n\n'),
+                      TextSpan(
+                          text: 'Scoring:\n', style: TextStyle(fontSize: 16)),
+                      TextSpan(
+                          text:
+                              'Higher scores are earned by creating longer chains of symbols in a single move.'),
+                    ],
+                  ),
                 ),
               ),
             ),

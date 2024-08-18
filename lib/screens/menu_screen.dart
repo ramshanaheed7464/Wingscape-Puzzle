@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/screens/game_levels.dart';
 import 'package:wingscape_puzzle/services/game_service.dart';
@@ -24,7 +25,6 @@ class _MenuScreenState extends State<MenuScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.black,
       body: GetBuilder<GameStateController>(
         init: GameStateController(),
         builder: (_) {
@@ -34,7 +34,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 child: Image.asset(
                   AppImages.background,
                   fit: BoxFit.cover,
-                  opacity: const AlwaysStoppedAnimation(0.6),
                 ),
               ),
               Column(
@@ -73,7 +72,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         left: -screenWidth * 0.02,
                         top: -screenWidth * 0.05,
                         child: ClipRRect(
-                          child: Image.asset(AppImages.pinkStar,
+                          child: SvgPicture.asset(AppImages.pinkStar,
                               height: screenWidth * 0.13,
                               width: screenWidth * 0.13,
                               fit: BoxFit.fill),
@@ -83,7 +82,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         right: -screenWidth * 0.02,
                         top: -screenWidth * 0.05,
                         child: ClipRRect(
-                          child: Image.asset(AppImages.pinkStar,
+                          child: SvgPicture.asset(AppImages.pinkStar,
                               height: screenWidth * 0.13,
                               width: screenWidth * 0.13,
                               fit: BoxFit.fill),
@@ -94,7 +93,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         right: screenWidth * 0.04,
                         top: -screenWidth * 0.13,
                         child: ClipRRect(
-                          child: Image.asset(AppImages.pinkStar,
+                          child: SvgPicture.asset(AppImages.pinkStar,
                               height: screenWidth * 0.2,
                               width: screenWidth * 0.2,
                               fit: BoxFit.fill),
@@ -113,7 +112,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           GestureDetector(
                             onTap: () {
                               if (GameService.game.value.isSoundOn) {
-                                controller.playSound(Sounds.button);
+                                // controller.playSound(Sounds.button);
                               }
                               Get.to(() => const GameLevels());
                             },
@@ -126,7 +125,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                     color: AppTheme.purpleBorder, width: 3),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Center(child: Image.asset(AppImages.play)),
+                              child: Center(
+                                  child: SvgPicture.asset(AppImages.play)),
                             ),
                           ),
                           const StyledText(text: 'Play', fontSize: 32)
@@ -140,7 +140,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           GestureDetector(
                             onTap: () {
                               if (GameService.game.value.isSoundOn) {
-                                controller.playSound(Sounds.button);
+                                // controller.playSound(Sounds.button);
                               }
                               Get.to(() => const RuleScreen());
                             },
@@ -153,8 +153,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                     color: AppTheme.purpleBorder, width: 3),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child:
-                                  Center(child: Image.asset(AppImages.rules)),
+                              child: Center(
+                                  child: SvgPicture.asset(AppImages.rules)),
                             ),
                           ),
                           const StyledText(text: 'Rules', fontSize: 32)
@@ -184,7 +184,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 !GameService.game.value.isSoundOn;
                           });
                         },
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           GameService.game.value.isSoundOn
                               ? AppImages.soundOn
                               : AppImages.soundOff,
@@ -210,9 +210,9 @@ class _MenuScreenState extends State<MenuScreen> {
                     const SizedBox(height: 4),
                     GestureDetector(
                         onTap: () {
-                          controller.toggleMusic();
+                          // controller.toggleMusic();
                         },
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           GameService.game.value.isMusicOn
                               ? AppImages.musicOn
                               : AppImages.musicOff,
