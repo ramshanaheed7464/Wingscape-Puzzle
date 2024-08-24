@@ -1,22 +1,22 @@
 import 'dart:math';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/style/theme.dart';
 import 'package:wingscape_puzzle/utils/icons.dart';
 import 'package:wingscape_puzzle/utils/images.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../../widgets/line_painter.dart';
+import 'package:wingscape_puzzle/widgets/line_painter.dart';
 
 class SymbolMatching extends StatefulWidget {
   final BoxConstraints constraints;
   final Function(List<String>, int) onMatch;
 
-  const SymbolMatching(
-      {Key? key, required this.onMatch, required this.constraints})
-      : super(key: key);
+  const SymbolMatching({
+    Key? key,
+    required this.onMatch,
+    required this.constraints,
+  }) : super(key: key);
 
   @override
   SymbolMatchingState createState() => SymbolMatchingState();
@@ -37,7 +37,8 @@ class SymbolMatchingState extends State<SymbolMatching>
   final GlobalKey _gridkey = GlobalKey();
   late double cellSize;
 
-  int score = 0;
+  List<Widget> animatedSymbols = [];
+  late AnimationController _animationController;
 
   @override
   void initState() {
@@ -47,24 +48,92 @@ class SymbolMatchingState extends State<SymbolMatching>
       (widget.constraints.maxWidth - 1) / columns,
       (widget.constraints.maxHeight - 1) / rows,
     );
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   void initializeBoard() {
     board = List.generate(
-        rows, (_) => List.generate(columns, (_) => GameIcons.getRandomIcon()));
+      rows,
+      (_) => List.generate(columns, (_) => GameIcons.getRandomIcon()),
+    );
   }
 
   void refreshBoard() {
-    setState(() {
-      initializeBoard();
-    });
+    List<List<String>> oldBoard = List.from(board);
+    initializeBoard();
+    animateBoardRefresh(oldBoard);
   }
 
-  void regenerateBoard() {
-    setState(() {
-      initializeBoard();
-      score = 0;
-    });
+  void animateBoardRefresh(List<List<String>> oldBoard) {
+    animatedSymbols.clear();
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < columns; col++) {
+        _flyAwaySymbol(oldBoard[row][col], row, col);
+        _fallInSymbol(board[row][col], row, col);
+      }
+    }
+    _animationController.forward(from: 0);
+  }
+
+  void _flyAwaySymbol(String symbol, int row, int col) {
+    final random = Random();
+    final endX = random.nextDouble() * widget.constraints.maxWidth;
+    final endY = -cellSize;
+
+    final animation = Tween<Offset>(
+      begin: Offset(col * cellSize, row * cellSize),
+      end: Offset(endX, endY),
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    animatedSymbols.add(
+      AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) {
+          return Positioned(
+            left: animation.value.dx,
+            top: animation.value.dy,
+            child: child!,
+          );
+        },
+        child: SvgPicture.asset(symbol, width: cellSize, height: cellSize),
+      ),
+    );
+  }
+
+  void _fallInSymbol(String symbol, int row, int col) {
+    final animation = Tween<double>(
+      begin: -cellSize,
+      end: row * cellSize,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.bounceOut,
+    ));
+
+    animatedSymbols.add(
+      AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) {
+          return Positioned(
+            left: col * cellSize,
+            top: animation.value,
+            child: child!,
+          );
+        },
+        child: SvgPicture.asset(symbol, width: cellSize, height: cellSize),
+      ),
+    );
   }
 
   void selectSymbol(Offset position) {
@@ -82,7 +151,6 @@ class SymbolMatchingState extends State<SymbolMatching>
     } else if (isValidSelection(position)) {
       setState(() {
         if (selectedPositions.contains(position)) {
-          // If we're backtracking, remove all positions after the current one
           int index = selectedPositions.indexOf(position);
           selectedPositions = selectedPositions.sublist(0, index + 1);
         } else {
@@ -167,7 +235,6 @@ class SymbolMatchingState extends State<SymbolMatching>
         return board[row][col];
       }).toList();
 
-      // Check if all selected symbols are Wild
       bool allWild =
           matchedSymbols.every((symbol) => symbol == AppImages.combo);
 
@@ -227,36 +294,44 @@ class SymbolMatchingState extends State<SymbolMatching>
       onPanStart: handlePanStart,
       onPanUpdate: handlePanUpdate,
       onPanEnd: (_) => endDraw(),
-      child: CustomPaint(
-        painter: LinePainter(lineToDraw, cellSize),
-        child: Wrap(
-          key: _gridkey,
-          children: List.generate(rows * columns, (index) {
-            int row = index ~/ columns;
-            int col = index % columns;
-            return Container(
-              width: cellSize,
-              height: cellSize,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: selectedPositions
-                          .contains(Offset(col.toDouble(), row.toDouble()))
-                      ? AppTheme.pink.withOpacity(0.3)
-                      : Colors.white.withOpacity(0.7),
-                  width: selectedPositions
-                          .contains(Offset(col.toDouble(), row.toDouble()))
-                      ? 2
-                      : 1,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Center(
-                child: SvgPicture.asset(board[row][col],
-                    height: context.width * 0.13, fit: BoxFit.fill),
-              ),
-            );
-          }),
-        ),
+      child: Stack(
+        children: [
+          CustomPaint(
+            painter: LinePainter(lineToDraw, cellSize),
+            child: Wrap(
+              key: _gridkey,
+              children: List.generate(rows * columns, (index) {
+                int row = index ~/ columns;
+                int col = index % columns;
+                return Container(
+                  width: cellSize,
+                  height: cellSize,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: selectedPositions
+                              .contains(Offset(col.toDouble(), row.toDouble()))
+                          ? AppTheme.pink.withOpacity(0.3)
+                          : Colors.white.withOpacity(0.7),
+                      width: selectedPositions
+                              .contains(Offset(col.toDouble(), row.toDouble()))
+                          ? 2
+                          : 1,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      board[row][col],
+                      height: context.width * 0.13,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          ...animatedSymbols,
+        ],
       ),
     );
   }

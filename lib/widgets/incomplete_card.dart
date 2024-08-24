@@ -213,17 +213,19 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
               animation: _controller1,
               builder: (context, child) {
                 return Positioned(
-                  left: Get.width * 0.3,
-                  bottom:
-                      Get.height * 0.3 + 10 * sin(_controller1.value * 2 * pi),
+                  left: context.width * 0.3,
+                  top: context.width * 0.4 +
+                      10 * sin(_controller1.value * 2 * pi),
                   child: ClipRRect(
                     clipBehavior: Clip.none,
-                    child: Transform.rotate(
-                      angle: 40 * pi / 180,
-                      child: ClipRect(
+                    child: Transform(
+                      transform: Matrix4.rotationY(pi),
+                      alignment: Alignment.center,
+                      child: Opacity(
+                        opacity: 0.5,
                         child: SvgPicture.asset(
-                          AppImages.heart,
-                          height: 50,
+                          AppImages.bibble,
+                          height: context.width * 0.2,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -238,15 +240,18 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                 return Positioned(
                   right: Get.width * 0.3,
                   bottom:
-                      Get.height * 0.17 + 10 * sin(_controller2.value * 2 * pi),
+                      Get.height * 0.3 + 10 * sin(_controller2.value * 2 * pi),
                   child: ClipRRect(
                     clipBehavior: Clip.none,
                     child: Transform.rotate(
                       angle: 70 * pi / 180,
                       child: ClipRect(
-                        child: SvgPicture.asset(
-                          AppImages.heart,
-                          height: 75,
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: SvgPicture.asset(
+                            AppImages.bibble,
+                            height: 75,
+                          ),
                         ),
                       ),
                     ),
@@ -258,18 +263,18 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
               animation: _controller3,
               builder: (context, child) {
                 return Positioned(
-                  left: 40,
-                  bottom: 60 + 10 * sin(_controller3.value * 2 * pi),
+                  left: 30,
+                  bottom: context.width * 0.3 +
+                      10 * sin(_controller3.value * 2 * pi),
                   child: ClipRRect(
                     clipBehavior: Clip.none,
-                    child: Transform.rotate(
-                      angle: pi / 180,
-                      child: ClipRect(
-                        child: SvgPicture.asset(
-                          AppImages.heart,
-                          height: 100,
-                          fit: BoxFit.fill,
-                        ),
+                    child: Transform(
+                      transform: Matrix4.rotationY(pi),
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        AppImages.bibble,
+                        height: context.width * 0.5,
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),
@@ -277,11 +282,14 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
               },
             ),
             Positioned(
+              bottom: -30,
+              left: context.width * 0.1,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SvgPicture.asset(
                   AppImages.shell,
-                  height: 100,
+                  width: context.width * 0.5,
+                  height: context.width * 0.8,
                   fit: BoxFit.fill,
                 ),
               ),

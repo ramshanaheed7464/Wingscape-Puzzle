@@ -55,9 +55,9 @@ class _GameModeState extends State<GameMode> {
   }
 
   void initializeContainers() {
-    int levelGroup = (currentLevel.number - 1) ~/ 5;
+    int levelGroup = (currentLevel.number - 1) ~/ 8;
 
-    switch (currentLevel.number % 5) {
+    switch (currentLevel.number % 8) {
       case 0:
         containerCounts[containerImages[0]] = 10 + (levelGroup * 15);
         containerCounts[containerImages[1]] = 10 + (levelGroup * 15);
@@ -108,8 +108,8 @@ class _GameModeState extends State<GameMode> {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: Get.width * 0.12,
-          height: Get.width * 0.12,
+          width: Get.width * 0.1,
+          height: Get.width * 0.1,
           decoration: const BoxDecoration(
             color: AppTheme.peach,
             shape: BoxShape.circle,
@@ -117,8 +117,8 @@ class _GameModeState extends State<GameMode> {
           child: Center(
             child: SvgPicture.asset(
               image,
-              width: Get.width * 0.09,
-              height: Get.width * 0.09,
+              width: Get.width * 0.07,
+              height: Get.width * 0.07,
             ),
           ),
         ),
@@ -128,8 +128,8 @@ class _GameModeState extends State<GameMode> {
           child: containerCounts[image]! > 0
               ? CustomContainer(number: containerCounts[image]!)
               : Container(
-                  width: Get.width * 0.08,
-                  height: Get.width * 0.08,
+                  width: Get.width * 0.06,
+                  height: Get.width * 0.06,
                   decoration: BoxDecoration(
                     color: AppTheme.pink,
                     shape: BoxShape.circle,
@@ -182,53 +182,45 @@ class _GameModeState extends State<GameMode> {
                   padding: EdgeInsets.fromLTRB(16, context.width * 0.2, 16, 16),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
+                      if (currentLevel.number % 8 == 0)
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      AppImages.clock,
-                                      width: context.width * 0.2,
-                                      height: context.width * 0.2,
-                                      fit: BoxFit.fill,
-                                    ),
-                                    Text(
-                                      formatTime(currentLevel.remainingTime),
-                                      style: AppTheme.textTheme.copyWith(
-                                          color: AppTheme.white, fontSize: 24),
-                                    )
-                                  ],
+                            Column(children: [
+                              const StyledText(text: 'Target', fontSize: 24),
+                              Container(
+                                width: Get.width * 0.26,
+                                height: Get.height * 0.04,
+                                decoration: BoxDecoration(
+                                  gradient: AppTheme.line,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(22),
                                 ),
-                                SizedBox(
-                                  width: 120,
-                                  height: 12,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: LinearProgressIndicator(
-                                      value: calculateProgressValue(),
-                                      backgroundColor: Colors.grey,
-                                      valueColor:
-                                          const AlwaysStoppedAnimation<Color>(
-                                              AppTheme.pink),
-                                    ),
+                                child: Center(
+                                  child: Container(
+                                    width: Get.width * 0.29,
+                                    height: Get.height * 0.05,
+                                    decoration: BoxDecoration(
+                                        gradient: AppTheme.pinkGradient,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(18)),
+                                    child: Center(
+                                        child: Text(
+                                      '${currentLevel.score}',
+                                      style: AppTheme.textTheme
+                                          .copyWith(fontSize: 24),
+                                    )),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ]),
                             Column(
                               children: [
-                                const StyledText(text: 'Score', fontSize: 32),
+                                const StyledText(text: 'Score', fontSize: 24),
                                 Container(
-                                  width: Get.width * 0.31,
-                                  height: Get.height * 0.06,
+                                  width: Get.width * 0.26,
+                                  height: Get.height * 0.04,
                                   decoration: BoxDecoration(
                                     gradient: AppTheme.line,
                                     shape: BoxShape.rectangle,
@@ -256,16 +248,60 @@ class _GameModeState extends State<GameMode> {
                             ),
                           ],
                         ),
-                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: containerImages
-                            .map((image) => Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: Get.width * 0.01),
-                                  child: buildContainerStack(image),
-                                ))
-                            .toList(),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppImages.clock,
+                                    width: context.width * 0.15,
+                                    height: context.width * 0.15,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  StyledText(
+                                      text: formatTime(
+                                          currentLevel.remainingTime),
+                                      fontSize: 24)
+                                ],
+                              ),
+                              SizedBox(
+                                width: context.width * 0.3,
+                                height: context.width * 0.02,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return AppTheme.line.createShader(bounds);
+                                    },
+                                    child: LinearProgressIndicator(
+                                      value: calculateProgressValue(),
+                                      backgroundColor: Colors.grey,
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                              AppTheme.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: containerImages
+                                .map((image) => Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: Get.width * 0.01),
+                                      child: buildContainerStack(image),
+                                    ))
+                                .toList(),
+                          ),
+                        ],
                       ),
                       Expanded(
                         child: Center(
@@ -298,7 +334,7 @@ class _GameModeState extends State<GameMode> {
                   right: Get.width * 0.05,
                   child: GestureDetector(
                     onTap: () {
-                      // controller.playSound(Sounds.refresh);
+                      controller.playSound(Sounds.refresh);
                       if (_gameBoardKey.currentState != null) {
                         _gameBoardKey.currentState!.refreshBoard();
                       }
@@ -308,9 +344,10 @@ class _GameModeState extends State<GameMode> {
                       width: context.width * 0.15,
                       height: context.width * 0.15,
                       decoration: BoxDecoration(
-                          gradient: AppTheme.purpleGradient,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(12)),
+                        gradient: AppTheme.purpleGradient,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Center(child: SvgPicture.asset(AppImages.refresh)),
                     ),
                   ),
@@ -483,23 +520,15 @@ class _GameModeState extends State<GameMode> {
                                 color: AppTheme.purpleBorder, width: 3),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: SvgPicture.asset(AppImages.exit),
+                          child: SvgPicture.asset(
+                            AppImages.exit,
+                            height: 4,
+                            // fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
                   ],
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(pi),
-                    child: SvgPicture.asset(
-                      AppImages.bibble,
-                      height: context.width * 0.5,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -548,7 +577,7 @@ class _GameModeState extends State<GameMode> {
   void restartLevel() {
     setState(() {
       resetContainers();
-      _gameBoardKey.currentState?.regenerateBoard();
+      _gameBoardKey.currentState?.refreshBoard();
       startLevel();
     });
   }

@@ -172,11 +172,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 bottom: screenWidth * 0.01,
                 child: Column(
                   children: [
-                    Text(
-                      'sound'.tr,
-                      style: AppTheme.textTheme.copyWith(fontSize: 24),
-                    ),
-                    const SizedBox(height: 4),
+                    const StyledText(text: 'Sound', fontSize: 28),
                     GestureDetector(
                         onTap: () {
                           setState(() {
@@ -191,10 +187,9 @@ class _MenuScreenState extends State<MenuScreen> {
                           width: screenWidth * 0.3,
                           fit: BoxFit.fill,
                         )),
-                    Text(
-                      GameService.game.value.isSoundOn ? 'On' : 'Off',
-                      style: AppTheme.textTheme,
-                    ),
+                    StyledText(
+                        text: GameService.game.value.isSoundOn ? 'On' : 'Off',
+                        fontSize: 28),
                   ],
                 ),
               ),
@@ -203,11 +198,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 bottom: screenWidth * 0.01,
                 child: Column(
                   children: [
-                    Text(
-                      'music'.tr,
-                      style: AppTheme.textTheme.copyWith(fontSize: 24),
-                    ),
-                    const SizedBox(height: 4),
+                    const StyledText(text: 'Music', fontSize: 28),
                     GestureDetector(
                         onTap: () {
                           // controller.toggleMusic();
@@ -220,10 +211,9 @@ class _MenuScreenState extends State<MenuScreen> {
                           fit: BoxFit.fill,
                         )),
                     Obx(
-                      () => Text(
-                        GameService.game.value.isMusicOn ? 'On' : 'Off',
-                        style: AppTheme.textTheme,
-                      ),
+                      () => StyledText(
+                          text: GameService.game.value.isMusicOn ? 'On' : 'Off',
+                          fontSize: 28),
                     )
                   ],
                 ),

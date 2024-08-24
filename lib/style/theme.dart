@@ -17,8 +17,8 @@ class AppTheme {
   );
   static const Gradient line = LinearGradient(
     colors: [grey, pink],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
   );
   static const Gradient purpleGradient = LinearGradient(
     colors: [grey, purple],

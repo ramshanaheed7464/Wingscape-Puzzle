@@ -92,7 +92,7 @@ class _GameLevelsState extends State<GameLevels> {
               slivers: [
                 SliverPadding(
                   padding: EdgeInsets.symmetric(
-                      vertical: screenWidth * 0.3,
+                      vertical: screenWidth * 0.35,
                       horizontal: screenWidth * 0.05),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
