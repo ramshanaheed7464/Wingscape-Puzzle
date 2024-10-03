@@ -39,7 +39,7 @@ class AppTheme {
   static const TextStyle textTheme = TextStyle(
     fontFamily: 'Lobster',
     fontWeight: FontWeight.w900,
-    fontSize: 15,
+    fontSize: 20,
     color: Colors.white,
   );
 }

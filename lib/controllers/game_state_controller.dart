@@ -1,13 +1,13 @@
 import 'dart:ui';
-
-import 'package:wingscape_puzzle/services/game_service.dart';
-import 'package:wingscape_puzzle/widgets/game_sounds.dart';
 import 'package:get/get.dart';
+import 'package:wingscape_puzzle/services/game_service.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
+import 'package:wingscape_puzzle/widgets/sound_manager.dart';
 
 class GameStateController extends GetxController {
   late SoundManager soundManager;
   Rx<GameModel> get game => GameService.game;
+
   @override
   void onInit() {
     super.onInit();
@@ -17,12 +17,18 @@ class GameStateController extends GetxController {
     );
   }
 
-  // void toggleMusic() {
-  //   game.value.isMusicOn = !game.value.isMusicOn;
-  //   soundManager.toggleMusic(game.value.isMusicOn);
-  //   update();
-  //   saveGameState();
-  // }
+  void toggleMusic() {
+    game.value.isMusicOn = !game.value.isMusicOn;
+    soundManager.toggleMusic(game.value.isMusicOn);
+    update();
+    saveGameState();
+  }
+
+  void playSound(String asset) {
+    if (game.value.isSoundOn) {
+      soundManager.playSound(asset);
+    }
+  }
 
   void switchToEnglish() {
     game.value.isEnSelected = true;
@@ -42,18 +48,19 @@ class GameStateController extends GetxController {
     await GameService.saveGameDetails();
   }
 
-  void playSound(String asset) {
-    if (game.value.isSoundOn) {
-      soundManager.playSound(asset);
-    }
-  }
-
   void onLevelCompleted(Level level) {
-    GameService.game.value.levels[level.number] = level;
-    GameService.game.value.totalStars = calculateTotalStars();
-    GameService.saveGameDetails();
-    saveGameState();
-    update();
+    int index = level.number - 1;
+    if (index >= 0 && index < game.value.levels.length) {
+      game.value.levels[index] = level;
+
+      if (index + 1 < game.value.levels.length && level.isComplete) {
+        game.value.levels[index + 1].isLocked = false;
+      }
+
+      game.value.totalStars = calculateTotalStars();
+      saveGameState();
+      game.refresh();
+    }
   }
 
   int calculateTotalStars() {
@@ -61,7 +68,11 @@ class GameStateController extends GetxController {
   }
 
   void updateBestScore(Level level) {
-    GameService.game.value.levels[level.number].bestScore = level.bestScore;
-    saveGameState();
+    int index = level.number - 1;
+    if (index >= 0 && index < game.value.levels.length) {
+      game.value.levels[index].bestScore = level.bestScore;
+      saveGameState();
+      game.refresh();
+    }
   }
 }

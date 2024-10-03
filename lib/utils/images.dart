@@ -1,18 +1,16 @@
 class AppImages {
-  static const String b1 = 'assets/images/icons/b1.svg';
-  static const String b2 = 'assets/images/icons/b2.svg';
-  static const String b3 = 'assets/images/icons/b3.svg';
-  static const String b4 = 'assets/images/icons/b4.svg';
-  static const String b5 = 'assets/images/icons/b5.svg';
-  static const String b6 = 'assets/images/icons/b6.svg';
+  static const String b1 = 'assets/images/icons/b1.png';
+  static const String b2 = 'assets/images/icons/b2.png';
+  static const String b3 = 'assets/images/icons/b3.png';
+  static const String b4 = 'assets/images/icons/b4.png';
+  static const String b5 = 'assets/images/icons/b5.png';
   static const String back = 'assets/images/icons/back.svg';
-  static const String badge = 'assets/images/icons/badge.svg';
+  static const String badge = 'assets/images/icons/badge.png';
   static const String bibble = 'assets/images/icons/bibble.svg';
   static const String background = 'assets/images/background/bg.jpeg';
-  static const String clock = 'assets/images/icons/clock.svg';
-  static const String combo = 'assets/images/icons/combo.svg';
+  static const String clock = 'assets/images/icons/clock.png';
+  static const String combo = 'assets/images/icons/combo.png';
   static const String exit = 'assets/images/icons/exit.svg';
-  static const String heart = 'assets/images/icons/heart.svg';
   static const String lock = 'assets/images/icons/lock.svg';
   static const String musicOff = 'assets/images/icons/music-off.svg';
   static const String musicOn = 'assets/images/icons/music-on.svg';
@@ -23,7 +21,8 @@ class AppImages {
   static const String refresh = 'assets/images/icons/refresh.svg';
   static const String restart = 'assets/images/icons/restart.svg';
   static const String resume = 'assets/images/icons/resume.svg';
-  static const String rules = 'assets/images/icons/rules.svg';
+  static const String rules = 'assets/images/icons/rule.svg';
+  static const String settings = 'assets/images/icons/settings.svg';
   static const String shell = 'assets/images/icons/shell.svg';
   static const String soundOn = 'assets/images/icons/sound-on.svg';
   static const String soundOff = 'assets/images/icons/sound-off.svg';

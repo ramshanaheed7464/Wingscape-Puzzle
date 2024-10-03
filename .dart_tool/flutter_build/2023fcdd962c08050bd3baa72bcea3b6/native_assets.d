@@ -1,1 +1,0 @@
- C:\\Users\\rimsh\\wingscape\\.dart_tool\\flutter_build\\2023fcdd962c08050bd3baa72bcea3b6\\native_assets.yaml: 

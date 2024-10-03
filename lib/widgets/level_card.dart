@@ -1,15 +1,14 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
-import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wingscape_puzzle/style/theme.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
 import 'package:wingscape_puzzle/utils/images.dart';
+import 'package:wingscape_puzzle/utils/sounds.dart';
 
-class LevelCard extends StatelessWidget {
+class LevelCard extends StatefulWidget {
   final Level currentLevel;
   final VoidCallback onPlay;
   final VoidCallback onRestart;
@@ -28,12 +27,37 @@ class LevelCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  LevelCardState createState() => LevelCardState();
+}
+
+class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+
+    // Tween to animate between 0.5 (dim) and 1.0 (full glow).
+    _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final GameStateController controller = Get.find();
-
-    double imageHeight = Get.height * 0.42;
-    final minutes = remainingTime ~/ 60;
-    final seconds = remainingTime % 60;
+    final minutes = widget.remainingTime ~/ 60;
+    final seconds = widget.remainingTime % 60;
 
     final formattedMinutes = minutes.toString().padLeft(2, '0');
     final formattedSeconds = seconds.toString().padLeft(2, '0');
@@ -43,6 +67,17 @@ class LevelCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Stack(
           children: [
+            Positioned(
+              child: FadeTransition(
+                opacity: _glowAnimation,
+                child: SvgPicture.asset(
+                  AppImages.sparkle,
+                  height: Get.height,
+                  width: Get.height,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
             Container(
               color: AppTheme.blur.withOpacity(0.2),
               child: Center(
@@ -66,26 +101,13 @@ class LevelCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Center(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 12.0, 0, 0),
-                                    child: SvgPicture.asset(
-                                      'assets/images/icons/clock.png',
-                                      width: 60,
-                                      height: 60,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$formattedMinutes:$formattedSeconds',
-                                    style: const TextStyle(
-                                      fontSize: 32,
-                                      color: AppTheme.white,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                ],
+                              child: Text(
+                                '$formattedMinutes:$formattedSeconds',
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  color: AppTheme.white,
+                                  decoration: TextDecoration.none,
+                                ),
                               ),
                             ),
                           ),
@@ -95,7 +117,7 @@ class LevelCard extends StatelessWidget {
                           bottom: 90,
                           child: ClipRRect(
                             child: SvgPicture.asset(
-                              stars >= 1
+                              widget.stars >= 1
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.1,
@@ -109,7 +131,7 @@ class LevelCard extends StatelessWidget {
                           bottom: 90,
                           child: ClipRRect(
                             child: SvgPicture.asset(
-                              stars >= 3
+                              widget.stars >= 3
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.1,
@@ -124,7 +146,7 @@ class LevelCard extends StatelessWidget {
                           bottom: 100,
                           child: ClipRRect(
                             child: SvgPicture.asset(
-                              stars >= 2
+                              widget.stars >= 2
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.13,
@@ -143,8 +165,8 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              // controller.playSound(Sounds.button);
-                              onPlay();
+                              controller.playSound(Sounds.button);
+                              widget.onPlay();
                             },
                             child: Container(
                               width: 50,
@@ -157,7 +179,10 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: SvgPicture.asset(AppImages.play),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(AppImages.next),
+                              ),
                             ),
                           ),
                         ),
@@ -166,8 +191,8 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              // controller.playSound(Sounds.button);
-                              onRestart();
+                              controller.playSound(Sounds.button);
+                              widget.onRestart();
                             },
                             child: Container(
                               width: 50,
@@ -180,7 +205,10 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: SvgPicture.asset(AppImages.restart),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(AppImages.restart),
+                              ),
                             ),
                           ),
                         ),
@@ -189,8 +217,8 @@ class LevelCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              // controller.playSound(Sounds.button);
-                              onExit();
+                              controller.playSound(Sounds.button);
+                              widget.onExit();
                             },
                             child: Container(
                               width: 50,
@@ -203,7 +231,10 @@ class LevelCard extends StatelessWidget {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: SvgPicture.asset(AppImages.exit),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(AppImages.exit),
+                              ),
                             ),
                           ),
                         ),
@@ -214,23 +245,7 @@ class LevelCard extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned(
-              left: (Get.width / 2) - (imageHeight / 2),
-              bottom: -20,
-              child: ClipRRect(
-                clipBehavior: Clip.none,
-                child: Transform.rotate(
-                  angle: 20 * pi / 180,
-                  child: ClipRect(
-                    child: SvgPicture.asset(
-                      AppImages.sparkle,
-                      height: imageHeight,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),

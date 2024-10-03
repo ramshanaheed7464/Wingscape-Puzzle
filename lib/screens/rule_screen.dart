@@ -1,4 +1,4 @@
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:wingscape_puzzle/widgets/text_widget.dart';
@@ -15,7 +15,7 @@ class RuleScreen extends StatefulWidget {
 }
 
 class _RuleScreenState extends State<RuleScreen> {
-  final gameStateController = Get.find<GameStateController>();
+  final controller = Get.find<GameStateController>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,11 @@ class _RuleScreenState extends State<RuleScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: StyledText(text: 'rules'.tr, fontSize: 32),
+        title: const StyledText(text: 'Rules', fontSize: 44),
         centerTitle: true,
         leading: GestureDetector(
           onTap: () {
-            // gameStateController.playSound(Sounds.button);
+            controller.playSound(Sounds.button);
             Get.back();
           },
           child: Container(
@@ -42,7 +42,10 @@ class _RuleScreenState extends State<RuleScreen> {
               border: Border.all(color: AppTheme.purpleBorder, width: 3),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: SvgPicture.asset(AppImages.back),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(AppImages.back),
+            ),
           ),
         ),
       ),
@@ -60,7 +63,7 @@ class _RuleScreenState extends State<RuleScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                     style: AppTheme.textTheme,
                     children: [
                       TextSpan(

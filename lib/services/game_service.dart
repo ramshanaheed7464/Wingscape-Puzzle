@@ -15,32 +15,55 @@ class GameService {
   static Future<void> _loadGameDetails() async {
     final gameString = await Storage.getString(_gameKey);
     if (gameString.isNotEmpty) {
-      final gameJson = jsonDecode(gameString);
-      game = GameModel.fromJson(gameJson).obs;
+      try {
+        final gameJson = jsonDecode(gameString);
+        game = GameModel.fromJson(gameJson).obs;
+        _validateGameData();
+      } catch (e) {
+        print("Error loading game data: $e");
+        _initializeNewGame();
+      }
     } else {
-      game = GameModel(
-              levels: List.generate(
-                400,
-                (index) => Level(
-                    isLocked: index > 1,
-                    isCompleted: false,
-                    stars: 0,
-                    number: index,
-                    remainingTime: 0,
-                    score: 0,
-                    points: 0,
-                    bestScore: 0),
-              ),
-              isSoundOn: true,
-              isMusicOn: true,
-              currentLevel: 1,
-              totalStars: 0)
-          .obs;
+      _initializeNewGame();
+    }
+    game.refresh();
+  }
+
+  static void _initializeNewGame() {
+    game = GameModel(
+        levels: List.generate(
+          400,
+              (index) => Level(
+              isLocked: index > 0,
+              isCompleted: false,
+              stars: 0,
+              number: index+1,
+              remainingTime: 0,
+              score: 0,
+              points: 0,
+              bestScore: 0),
+        ),
+        isSoundOn: true,
+        isMusicOn: true,
+        currentLevel: 1,
+        totalStars: 0).obs;
+  }
+
+  static void _validateGameData() {
+    for (int i = 1; i < game.value.levels.length; i++) {
+      if (!game.value.levels[i - 1].isComplete) {
+        game.value.levels[i].isLocked = true;
+      }
     }
   }
 
   static Future<void> saveGameDetails() async {
-    final gameJson = game.toJson();
-    await Storage.setString(_gameKey, jsonEncode(gameJson));
+    try {
+      final gameJson = game.toJson();
+      await Storage.setString(_gameKey, jsonEncode(gameJson));
+      game.refresh();
+    } catch (e) {
+      print("Error saving game data: $e");
+    }
   }
 }
