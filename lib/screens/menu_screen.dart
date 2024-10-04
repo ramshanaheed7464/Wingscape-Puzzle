@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
@@ -45,106 +43,23 @@ class _MenuScreenState extends State<MenuScreen> {
                 child: GestureDetector(
                   onTap: () {
                     controller.playSound(Sounds.button);
-                    },
-                  child: PopupMenuButton<String>(
-                    icon: Container(
-                      height: width * 0.15,
-                      width: context.width * 0.15,
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.pinkGradient,
-                        border: Border.all(color: AppTheme.pinkBorder, width: 2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          AppImages.settings,
-                          fit: BoxFit.fill,
-                          height: context.width * 0.075,
-                        ),
+                    _showSettingsDialog(context);
+                  },
+                  child: Container(
+                    height: width * 0.15,
+                    width: context.width * 0.15,
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.pinkGradient,
+                      border: Border.all(color: AppTheme.pinkBorder, width: 2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        AppImages.settings,
+                        fit: BoxFit.fill,
+                        height: context.width * 0.075,
                       ),
                     ),
-                    onSelected: (String result) {
-                      switch (result) {
-                        case 'Sound':
-                          controller.playSound(Sounds.button);
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            setState(() {
-                              GameService.game.value.isSoundOn = !GameService.game.value.isSoundOn;
-                            });
-                          });
-                          break;
-                        case 'Music':
-
-                          controller.toggleMusic();
-                          break;
-                        case 'Rules':
-                          controller.playSound(Sounds.button);
-                          Get.to(() => const RuleScreen());
-                          break;
-                        case 'Tutorial':
-                          controller.playSound(Sounds.button);
-                          //TODO navigate to tutorial
-                          break;
-                      }
-                      },
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: 'Sound',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              GameService.game.value.isSoundOn ? AppImages.soundOn : AppImages.soundOff,
-                              width: 24,
-                              height: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('Sound'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'Music',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              controller.game.value.isMusicOn ? AppImages.musicOn : AppImages.musicOff,
-                              width: 24,
-                              height: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('Music'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'Rules',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              AppImages.rules,
-                              width: 24,
-                              height: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('Rules'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'Tutorial',
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              AppImages.play,
-                              width: 24,
-                              height: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('Tutorial'),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
@@ -216,27 +131,21 @@ class _MenuScreenState extends State<MenuScreen> {
                               controller.playSound(Sounds.button);
                               Get.to(() => const GameLevels());
                             },
-                            child: Transform.rotate(
-                              angle: pi / 4, // Rotate the container by 45 degrees (π/4 radians)
-                              child: Container(
-                                width: width * 0.18,
-                                height: width * 0.18,
-                                decoration: BoxDecoration(
-                                  gradient: AppTheme.purpleGradient,
-                                  border: Border.all(
-                                    color: AppTheme.purpleBorder,
-                                    width: 3,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: width * 0.18,
+                              height: width * 0.18,
+                              decoration: BoxDecoration(
+                                gradient: AppTheme.purpleGradient,
+                                border: Border.all(
+                                  color: AppTheme.purpleBorder,
+                                  width: 3,
                                 ),
-                                child: Center(
-                                  child: Transform.rotate(
-                                    angle: -pi / 4,
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 8.0, 8.0),
-                                      child: SvgPicture.asset(AppImages.play),
-                                    ),
-                                  ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 8.0, 8.0),
+                                  child: SvgPicture.asset(AppImages.play),
                                 ),
                               ),
                             ),
@@ -253,6 +162,111 @@ class _MenuScreenState extends State<MenuScreen> {
           );
         },
       ),
+    );
+  }
+  void _showSettingsDialog(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        title: Center(
+          child: Text(
+            'Settings',
+            style: AppTheme.textTheme.copyWith(color: Colors.black),
+          ),
+        ),
+        content: GetBuilder<GameStateController>(
+          builder: (controller) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: SvgPicture.asset(
+                    GameService.game.value.isSoundOn
+                        ? AppImages.soundOn
+                        : AppImages.soundOff,
+                    width: 24,
+                    height: 24,
+                  ),
+                  title: Text(
+                    'Sound',
+                    style: AppTheme.textTheme.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  onTap: () {
+                    controller.playSound(Sounds.button);
+                    GameService.game.value.isSoundOn =
+                    !GameService.game.value.isSoundOn;
+                    controller.update();
+                  },
+                ),
+                ListTile(
+                  leading: SvgPicture.asset(
+                    controller.game.value.isMusicOn
+                        ? AppImages.musicOn
+                        : AppImages.musicOff,
+                    width: 24,
+                    height: 24,
+                  ),
+                  title: Text(
+                    'Music',
+                    style: AppTheme.textTheme.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  onTap: () {
+                    controller.toggleMusic();
+                    controller.update();
+                  },
+                ),
+                ListTile(
+                  leading: SvgPicture.asset(AppImages.rules, width: 24, height: 24),
+                  title: Text(
+                    'Rules',
+                    style: AppTheme.textTheme.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  onTap: () {
+                    controller.playSound(Sounds.button);
+                    Get.to(() => const RuleScreen());
+                  },
+                ),
+                ListTile(
+                  leading:
+                  SvgPicture.asset(AppImages.tutorial, width: 24, height: 24),
+                  title: Text(
+                    'Tutorial',
+                    style: AppTheme.textTheme.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  onTap: () {
+                    controller.playSound(Sounds.button);
+                    Get.back();
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Close',
+              style: AppTheme.textTheme.copyWith(color: Colors.pink),
+            ),
+            onPressed: () {
+              controller.playSound(Sounds.button);
+              Get.back();
+            },
+          ),
+        ],
+      ),
+      barrierDismissible: false,
     );
   }
 }

@@ -44,7 +44,7 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
     )..repeat(reverse: true);
 
     // Tween to animate between 0.5 (dim) and 1.0 (full glow).
-    _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(_animationController);
+    _glowAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(_animationController);
   }
 
   @override

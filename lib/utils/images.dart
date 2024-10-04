@@ -27,5 +27,6 @@ class AppImages {
   static const String soundOn = 'assets/images/icons/sound-on.svg';
   static const String soundOff = 'assets/images/icons/sound-off.svg';
   static const String sparkle = 'assets/images/icons/sparkle.svg';
+  static const String tutorial = 'assets/images/icons/tutorial.svg';
   static const String whiteStar = 'assets/images/icons/white.svg';
 }

@@ -16,15 +16,8 @@ class SoundManager {
 
   void playSound(String asset) {
     if (isSoundOn) {
-      double volume = 2.0;
-
       soundPlayer?.play(AssetSource(asset));
-      if(asset == Sounds.match) {
-        volume = 4.0;
-      } else {
-        volume = 2.0;
-      }
-      soundPlayer?.setVolume(volume);
+      soundPlayer?.setVolume(1.0);
     }
   }
 
