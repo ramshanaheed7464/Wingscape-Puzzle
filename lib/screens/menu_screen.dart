@@ -2,7 +2,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/screens/game_levels.dart';
-import 'package:wingscape_puzzle/services/game_service.dart';
 import 'package:wingscape_puzzle/style/theme.dart';
 import 'package:wingscape_puzzle/utils/images.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  final GameStateController controller = Get.put(GameStateController());
+  final GameStateController controller = Get.find<GameStateController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,6 @@ class _MenuScreenState extends State<MenuScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: GetBuilder<GameStateController>(
-        init: GameStateController(),
         builder: (_) {
           return Stack(
             children: [
@@ -86,7 +84,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              '${GameService.game.value.totalStars}',
+                              '${controller.game.value.totalStars}',
                               style: AppTheme.textTheme.copyWith(fontSize: 32),
                             ),
                           ),
@@ -180,7 +178,7 @@ class _MenuScreenState extends State<MenuScreen> {
               children: [
                 ListTile(
                   leading: SvgPicture.asset(
-                    GameService.game.value.isSoundOn
+                    controller.game.value.isSoundOn
                         ? AppImages.soundOn
                         : AppImages.soundOff,
                     width: 24,
@@ -195,9 +193,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   onTap: () {
                     controller.playSound(Sounds.button);
-                    GameService.game.value.isSoundOn =
-                    !GameService.game.value.isSoundOn;
-                    controller.update();
+                    controller.toggleSound();
                   },
                 ),
                 ListTile(
@@ -217,7 +213,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   onTap: () {
                     controller.toggleMusic();
-                    controller.update();
                   },
                 ),
                 ListTile(
