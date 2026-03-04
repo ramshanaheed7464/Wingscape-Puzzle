@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter_svg/svg.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
-import 'package:wingscape_puzzle/services/game_service.dart';
 import 'package:wingscape_puzzle/utils/sounds.dart';
 import 'package:wingscape_puzzle/widgets/incomplete_card.dart';
 import 'package:wingscape_puzzle/widgets/level_card.dart';
@@ -462,9 +461,7 @@ class _GameModeState extends State<GameMode> {
   void exitLevel() {
     if (currentLevel.isComplete && currentLevel.allTargetsAchieved) {
       // If the level is complete and all targets achieved, save the state
-      controller.onLevelCompleted(currentLevel);
-      GameService.saveGameDetails();
-      controller.saveGameState();
+      unawaited(controller.onLevelCompleted(currentLevel));
       print("Exiting level ${currentLevel.number}. IsComplete: ${currentLevel.isComplete}, AllTargetsAchieved: ${currentLevel.allTargetsAchieved}");
 
     } else {
@@ -492,10 +489,9 @@ class _GameModeState extends State<GameMode> {
         if (earnedStars > currentLevel.stars) {
           currentLevel.stars = earnedStars;
         }
-        controller.onLevelCompleted(currentLevel);
+        unawaited(controller.onLevelCompleted(currentLevel));
       }
-      GameService.saveGameDetails();
-      controller.saveGameState();
+      unawaited(controller.saveGameState());
     });
   }
 
@@ -695,7 +691,7 @@ class _GameModeState extends State<GameMode> {
         currentLevel.bestScore = currentLevel.score;
         controller.updateBestScore(currentLevel);
       }
-      controller.saveGameState();
+      unawaited(controller.saveGameState());
     });
   }
 

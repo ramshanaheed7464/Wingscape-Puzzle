@@ -1,27 +1,38 @@
 import 'dart:ui';
+
 import 'package:get/get.dart';
-import 'package:wingscape_puzzle/services/game_service.dart';
 import 'package:wingscape_puzzle/model/game_model.dart';
+import 'package:wingscape_puzzle/services/game_repository.dart';
 import 'package:wingscape_puzzle/widgets/sound_manager.dart';
 
 class GameStateController extends GetxController {
-  late SoundManager soundManager;
-  Rx<GameModel> get game => GameService.game;
+  GameStateController(this._repository);
+
+  final GameRepository _repository;
+  late final SoundManager soundManager;
+
+  Rx<GameModel> get game => _repository.game;
 
   @override
   void onInit() {
     super.onInit();
     soundManager = SoundManager(
-      isSoundOn: game.value.isSoundOn == true,
-      isMusicOn: game.value.isMusicOn == true,
+      isSoundOn: game.value.isSoundOn,
+      isMusicOn: game.value.isMusicOn,
     );
   }
 
-  void toggleMusic() {
+  Future<void> toggleSound() async {
+    game.value.isSoundOn = !game.value.isSoundOn;
+    update();
+    await saveGameState();
+  }
+
+  Future<void> toggleMusic() async {
     game.value.isMusicOn = !game.value.isMusicOn;
     soundManager.toggleMusic(game.value.isMusicOn);
     update();
-    saveGameState();
+    await saveGameState();
   }
 
   void playSound(String asset) {
@@ -30,26 +41,26 @@ class GameStateController extends GetxController {
     }
   }
 
-  void switchToEnglish() {
+  Future<void> switchToEnglish() async {
     game.value.isEnSelected = true;
     Get.updateLocale(const Locale('en', 'US'));
     update();
-    saveGameState();
+    await saveGameState();
   }
 
-  void switchToPortuguese() {
+  Future<void> switchToPortuguese() async {
     game.value.isEnSelected = false;
     Get.updateLocale(const Locale('pt', 'BR'));
     update();
-    saveGameState();
+    await saveGameState();
   }
 
   Future<void> saveGameState() async {
-    await GameService.saveGameDetails();
+    await _repository.save();
   }
 
-  void onLevelCompleted(Level level) {
-    int index = level.number - 1;
+  Future<void> onLevelCompleted(Level level) async {
+    final index = level.number - 1;
     if (index >= 0 && index < game.value.levels.length) {
       game.value.levels[index] = level;
 
@@ -58,8 +69,8 @@ class GameStateController extends GetxController {
       }
 
       game.value.totalStars = calculateTotalStars();
-      saveGameState();
       game.refresh();
+      await saveGameState();
     }
   }
 
@@ -67,12 +78,12 @@ class GameStateController extends GetxController {
     return game.value.levels.fold(0, (sum, level) => sum + level.stars);
   }
 
-  void updateBestScore(Level level) {
-    int index = level.number - 1;
+  Future<void> updateBestScore(Level level) async {
+    final index = level.number - 1;
     if (index >= 0 && index < game.value.levels.length) {
       game.value.levels[index].bestScore = level.bestScore;
-      saveGameState();
       game.refresh();
+      await saveGameState();
     }
   }
 }
