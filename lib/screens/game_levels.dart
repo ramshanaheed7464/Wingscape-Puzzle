@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:wingscape_puzzle/controllers/game_state_controller.dart';
-import 'package:wingscape_puzzle/services/game_service.dart';
 import 'package:wingscape_puzzle/style/theme.dart';
 import 'package:wingscape_puzzle/utils/images.dart';
 import 'package:wingscape_puzzle/widgets/text_widget.dart';
