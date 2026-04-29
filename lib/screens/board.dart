@@ -35,8 +35,6 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
   final GlobalKey _gridkey = GlobalKey();
   late double cellSize;
 
-  int score = 0;
-
   late AnimationController _flyAwayController;
   late AnimationController _fallInController;
   late Map<String, Animation<Offset>> _flyAwayAnimations;
@@ -129,6 +127,7 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
   }
 
   void refreshBoard() {
+    _initializeAnimations();
     _flyAwayController.forward().then((_) {
       if (!mounted) return;
       setState(() {
@@ -139,13 +138,6 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
         if (!mounted) return;
         _fallInController.reset();
       });
-    });
-  }
-
-  void regenerateBoard() {
-    setState(() {
-      initializeBoard();
-      score = 0;
     });
   }
 
@@ -222,22 +214,23 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
   }
 
   void handlePanStart(DragStartDetails details) {
-    Offset position = _globalToLocalPosition(details.globalPosition);
-    selectSymbol(position);
+    final position = _globalToLocalPosition(details.globalPosition);
+    if (position != null) selectSymbol(position);
   }
 
   void handlePanUpdate(DragUpdateDetails details) {
-    Offset position = _globalToLocalPosition(details.globalPosition);
-    selectSymbol(position);
+    final position = _globalToLocalPosition(details.globalPosition);
+    if (position != null) selectSymbol(position);
   }
 
-  Offset _globalToLocalPosition(Offset globalPosition) {
-    RenderBox gridRenderBox =
-    _gridkey.currentContext!.findRenderObject() as RenderBox;
-    Offset localPosition = gridRenderBox.globalToLocal(globalPosition);
-    double col = (localPosition.dx / cellSize).clamp(0, columns - 1);
-    double row = (localPosition.dy / cellSize).clamp(0, rows - 1);
-
+  Offset? _globalToLocalPosition(Offset globalPosition) {
+    final ctx = _gridkey.currentContext;
+    if (ctx == null) return null;
+    final gridRenderBox = ctx.findRenderObject() as RenderBox?;
+    if (gridRenderBox == null) return null;
+    final localPosition = gridRenderBox.globalToLocal(globalPosition);
+    final col = (localPosition.dx / cellSize).clamp(0, columns - 1);
+    final row = (localPosition.dy / cellSize).clamp(0, rows - 1);
     return Offset(col.floorToDouble(), row.floorToDouble());
   }
 

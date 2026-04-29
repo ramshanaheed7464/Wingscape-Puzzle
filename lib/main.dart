@@ -20,6 +20,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      builder: (context, child) {
+        return ColoredBox(
+          color: Colors.black,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: ClipRect(child: child!),
+            ),
+          ),
+        );
+      },
       debugShowCheckedModeBanner: false,
       title: 'Wingscape Puzzle',
       home: const MenuScreen(),

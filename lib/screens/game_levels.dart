@@ -60,20 +60,20 @@ class _GameLevelsState extends State<GameLevels> {
         automaticallyImplyLeading: false,
         leading: GestureDetector(
           onTap: () {
-              controller.playSound(Sounds.button);
+            controller.playSound(Sounds.button);
             Get.back();
-            },
+          },
           child: Container(
-            margin: const EdgeInsets.fromLTRB(8, 2, 0, 2),
-            width: screenWidth * 0.03,
-            height: screenWidth * 0.05,
+            margin: EdgeInsets.fromLTRB(screenWidth * 0.02, screenWidth * 0.01, 0, screenWidth * 0.01),
+            width: screenWidth * 0.1,
+            height: screenWidth * 0.1,
             decoration: BoxDecoration(
               gradient: AppTheme.purpleGradient,
               border: Border.all(color: AppTheme.purpleBorder, width: 3),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(screenWidth * 0.022),
               child: SvgPicture.asset(AppImages.back),
             ),
           ),

@@ -27,6 +27,7 @@ class _GameModeState extends State<GameMode> {
   late Level currentLevel;
   Timer? countdownTimer;
   final controller = Get.find<GameStateController>();
+  final List<OverlayEntry> _pendingOverlays = [];
 
   final GlobalKey<SymbolMatchingState> _gameBoardKey =
       GlobalKey<SymbolMatchingState>();
@@ -204,8 +205,12 @@ class _GameModeState extends State<GameMode> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(context.width * 0.04,
-                      context.width * 0.2, context.width * 0.04, 16),
+                  padding: EdgeInsets.fromLTRB(
+                    context.width * 0.04,
+                    MediaQuery.of(context).padding.top + kToolbarHeight,
+                    context.width * 0.04,
+                    context.width * 0.04,
+                  ),
                   child: Column(
                     children: [
                       if (currentLevel.number % 8 == 0)
@@ -275,84 +280,94 @@ class _GameModeState extends State<GameMode> {
                           ],
                         ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppImages.clock,
-                                    width: context.width * 0.15,
-                                    height: context.width * 0.15,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  StyledText(
-                                      text: formatTime(
-                                          currentLevel.remainingTime),
-                                      fontSize: 24)
-                                ],
-                              ),
-                              SizedBox(
-                                width: context.width * 0.3,
-                                height: context.width * 0.02,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: ShaderMask(
-                                    shaderCallback: (Rect bounds) {
-                                      return AppTheme.line
-                                          .createShader(bounds);
-                                    },
-                                    child: LinearProgressIndicator(
-                                      value: calculateProgressValue(),
-                                      backgroundColor: Colors.grey,
-                                      valueColor:
-                                          const AlwaysStoppedAnimation<Color>(
-                                              AppTheme.white),
+                          // Timer + progress bar
+                          SizedBox(
+                            width: context.width * 0.32,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      AppImages.clock,
+                                      width: context.width * 0.08,
+                                      height: context.width * 0.08,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    SizedBox(width: context.width * 0.01),
+                                    StyledText(
+                                        text: formatTime(
+                                            currentLevel.remainingTime),
+                                        fontSize: 22),
+                                  ],
+                                ),
+                                SizedBox(height: context.width * 0.01),
+                                SizedBox(
+                                  width: context.width * 0.3,
+                                  height: context.width * 0.02,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: ShaderMask(
+                                      shaderCallback: (Rect bounds) {
+                                        return AppTheme.line
+                                            .createShader(bounds);
+                                      },
+                                      child: LinearProgressIndicator(
+                                        value: calculateProgressValue(),
+                                        backgroundColor: Colors.grey,
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                                AppTheme.white),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: containerImages
-                                .map((image) => Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: Get.width * 0.01),
-                                      child: buildContainerStack(image),
-                                    ))
-                                .toList(),
+                          // Target counters fill the rest
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: containerImages
+                                  .map((image) => buildContainerStack(image))
+                                  .toList(),
+                            ),
                           ),
                         ],
                       ),
                       Expanded(
                         child: Center(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 16),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
+                            margin: EdgeInsets.symmetric(vertical: context.width * 0.03),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: context.width * 0.02,
+                                vertical: context.width * 0.02),
                             decoration: BoxDecoration(
                               border: Border.all(
                                   color: AppTheme.pinkBorder, width: 5),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: LayoutBuilder(
-                                builder: (context, constraints) {
-                              return SymbolMatching(
-                                constraints: constraints,
-                                key: _gameBoardKey,
-                                onMatch: updateContainers,
-                              );
-                            }),
+                            child: AbsorbPointer(
+                              absorbing: !currentLevel.isStarted ||
+                                  currentLevel.isStopped ||
+                                  currentLevel.isComplete,
+                              child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                return SymbolMatching(
+                                  constraints: constraints,
+                                  key: _gameBoardKey,
+                                  onMatch: updateContainers,
+                                );
+                              }),
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(height: context.width * 0.12)
+                      // Reserve space for the positioned bottom buttons
+                      SizedBox(height: context.width * 0.25)
                     ],
                   ),
                 ),
@@ -373,7 +388,10 @@ class _GameModeState extends State<GameMode> {
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Center(child: SvgPicture.asset(AppImages.refresh)),
+                      child: Padding(
+                        padding: EdgeInsets.all(context.width * 0.035),
+                        child: SvgPicture.asset(AppImages.refresh),
+                      ),
                     ),
                   ),
                 ),
@@ -395,7 +413,10 @@ class _GameModeState extends State<GameMode> {
                           gradient: AppTheme.purpleGradient,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(12)),
-                      child: Center(child: SvgPicture.asset(AppImages.pause)),
+                      child: Padding(
+                        padding: EdgeInsets.all(context.width * 0.035),
+                        child: SvgPicture.asset(AppImages.pause),
+                      ),
                     ),
                   ),
                 ),
@@ -415,7 +436,6 @@ class _GameModeState extends State<GameMode> {
       return LevelCard(
         currentLevel: currentLevel,
         onPlay: () {
-          _doResetContainers();
           nextLevel();
         },
         onRestart: () => restartLevel(),
@@ -436,9 +456,7 @@ class _GameModeState extends State<GameMode> {
   }
 
   void exitLevel() {
-    if (currentLevel.isComplete && currentLevel.allTargetsAchieved) {
-      unawaited(controller.onLevelCompleted(currentLevel));
-    }
+    // onLevelCompleted was already called in endGame(true) — don't call twice.
     Get.back();
   }
 
@@ -464,7 +482,6 @@ class _GameModeState extends State<GameMode> {
     } else {
       controller.playSound(Sounds.gameOver);
     }
-    unawaited(controller.saveGameState());
   }
 
   Widget _buildLetsStart() {
@@ -481,6 +498,34 @@ class _GameModeState extends State<GameMode> {
   }
 
   Widget _buildPauseOverlay() {
+    final w = Get.width;
+    final btnSize = w * 0.12;
+    final btnPad = w * 0.025;
+
+    Widget pauseBtn(Widget icon, VoidCallback onTap, {bool resumePad = false}) {
+      return Padding(
+        padding: EdgeInsets.all(btnPad),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: btnSize,
+            height: btnSize,
+            decoration: BoxDecoration(
+              gradient: AppTheme.purpleGradient,
+              border: Border.all(color: AppTheme.purpleBorder, width: 3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: resumePad
+                  ? EdgeInsets.fromLTRB(btnPad * 1.5, btnPad, btnPad, btnPad)
+                  : EdgeInsets.all(btnPad),
+              child: icon,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Positioned.fill(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -490,89 +535,27 @@ class _GameModeState extends State<GameMode> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const StyledText(text: 'Pause', fontSize: 52),
+                StyledText(text: 'Pause', fontSize: w * 0.13),
+                SizedBox(height: w * 0.04),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          controller.playSound(Sounds.button);
-                          setState(() {
-                            currentLevel.isStopped = false;
-                          });
-                          resumeTimer();
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.purpleGradient,
-                            border: Border.all(
-                                color: AppTheme.purpleBorder, width: 3),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(12.0, 8.0, 8.0, 8.0),
-                            child: SvgPicture.asset(AppImages.resume),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          controller.playSound(Sounds.button);
-                          restartLevel();
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.purpleGradient,
-                            border: Border.all(
-                                color: AppTheme.purpleBorder, width: 3),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(AppImages.restart),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          controller.playSound(Sounds.button);
-                          currentLevel.isStopped = false;
-                          Get.back();
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.purpleGradient,
-                            border: Border.all(
-                                color: AppTheme.purpleBorder, width: 3),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(
-                              AppImages.exit,
-                              height: 4,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    pauseBtn(SvgPicture.asset(AppImages.resume), () {
+                      controller.playSound(Sounds.button);
+                      setState(() => currentLevel.isStopped = false);
+                      resumeTimer();
+                    }, resumePad: true),
+                    SizedBox(width: w * 0.02),
+                    pauseBtn(SvgPicture.asset(AppImages.restart), () {
+                      controller.playSound(Sounds.button);
+                      restartLevel();
+                    }),
+                    SizedBox(width: w * 0.02),
+                    pauseBtn(SvgPicture.asset(AppImages.exit), () {
+                      controller.playSound(Sounds.button);
+                      currentLevel.isStopped = false;
+                      Get.back();
+                    }),
                   ],
                 ),
               ],
@@ -649,6 +632,10 @@ class _GameModeState extends State<GameMode> {
   @override
   void dispose() {
     countdownTimer?.cancel();
+    for (final entry in _pendingOverlays) {
+      entry.remove();
+    }
+    _pendingOverlays.clear();
     super.dispose();
   }
 
@@ -709,7 +696,7 @@ class _GameModeState extends State<GameMode> {
       case AppImages.clock:
         final timeBonus = 5 + (matchCount > 3 ? (matchCount - 3) * 10 : 0);
         currentLevel.remainingTime += timeBonus;
-        controller.playSound(Sounds.pause);
+        controller.playSound(Sounds.target);
         showTimeBonusIndicator(timeBonus);
         break;
       case AppImages.combo:
@@ -743,9 +730,12 @@ class _GameModeState extends State<GameMode> {
     );
 
     Overlay.of(context).insert(overlay);
+    _pendingOverlays.add(overlay);
 
     Future.delayed(const Duration(milliseconds: 1500), () {
-      overlay.remove();
+      if (_pendingOverlays.remove(overlay)) {
+        overlay.remove();
+      }
     });
   }
 
@@ -764,8 +754,6 @@ class _GameModeState extends State<GameMode> {
     if (currentLevel.allTargetsAchieved) {
       countdownTimer?.cancel();
       endGame(true);
-    } else {
-      unawaited(controller.saveGameState());
     }
   }
 

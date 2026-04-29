@@ -110,6 +110,7 @@ class Level {
     return Level(
       number: number,
       stars: stars,
+      isLocked: false,
       remainingTime: remainingTime,
       points: 0,
       score: 0,

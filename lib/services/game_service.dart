@@ -57,7 +57,9 @@ class GameService extends GetxService implements GameRepository {
 
   void _validateGameData() {
     for (int i = 1; i < game.value.levels.length; i++) {
-      if (!game.value.levels[i - 1].isComplete) {
+      if (game.value.levels[i - 1].isComplete) {
+        game.value.levels[i].isLocked = false;
+      } else {
         game.value.levels[i].isLocked = true;
       }
     }

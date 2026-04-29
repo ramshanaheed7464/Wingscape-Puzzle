@@ -30,7 +30,8 @@ class LevelCard extends StatefulWidget {
   LevelCardState createState() => LevelCardState();
 }
 
-class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixin {
+class LevelCardState extends State<LevelCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _glowAnimation;
 
@@ -43,8 +44,8 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
       duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
 
-    // Tween to animate between 0.5 (dim) and 1.0 (full glow).
-    _glowAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(_animationController);
+    _glowAnimation =
+        Tween<double>(begin: 0.5, end: 1.0).animate(_animationController);
   }
 
   @override
@@ -55,12 +56,15 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
+    final w = Get.width;
     final GameStateController controller = Get.find();
     final minutes = widget.remainingTime ~/ 60;
     final seconds = widget.remainingTime % 60;
+    final formattedTime =
+        '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 
-    final formattedMinutes = minutes.toString().padLeft(2, '0');
-    final formattedSeconds = seconds.toString().padLeft(2, '0');
+    final btnSize = w * 0.12;
+    final btnPad = w * 0.025;
 
     return Positioned.fill(
       child: BackdropFilter(
@@ -90,7 +94,7 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                       children: [
                         Positioned(
                           child: Container(
-                            width: Get.width * 0.36,
+                            width: w * 0.36,
                             height: Get.height * 0.17,
                             decoration: BoxDecoration(
                               gradient: AppTheme.pinkGradient,
@@ -102,9 +106,9 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                             ),
                             child: Center(
                               child: Text(
-                                '$formattedMinutes:$formattedSeconds',
-                                style: const TextStyle(
-                                  fontSize: 32,
+                                formattedTime,
+                                style: TextStyle(
+                                  fontSize: w * 0.08,
                                   color: AppTheme.white,
                                   decoration: TextDecoration.none,
                                 ),
@@ -113,64 +117,64 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                           ),
                         ),
                         Positioned(
-                          left: -20,
-                          bottom: 90,
+                          left: -w * 0.05,
+                          bottom: w * 0.22,
                           child: ClipRRect(
                             child: SvgPicture.asset(
                               widget.stars >= 1
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.1,
-                              width: Get.width * 0.17,
+                              width: w * 0.17,
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                         Positioned(
-                          right: -20,
-                          bottom: 90,
+                          right: -w * 0.05,
+                          bottom: w * 0.22,
                           child: ClipRRect(
                             child: SvgPicture.asset(
                               widget.stars >= 3
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.1,
-                              width: Get.width * 0.17,
+                              width: w * 0.17,
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                         Positioned(
-                          left: 25,
-                          right: 25,
-                          bottom: 100,
+                          left: w * 0.06,
+                          right: w * 0.06,
+                          bottom: w * 0.25,
                           child: ClipRRect(
                             child: SvgPicture.asset(
                               widget.stars >= 2
                                   ? AppImages.pinkStar
                                   : AppImages.whiteStar,
                               height: Get.height * 0.13,
-                              width: Get.width * 0.15,
+                              width: w * 0.15,
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: w * 0.05),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(btnPad),
                           child: GestureDetector(
                             onTap: () {
                               controller.playSound(Sounds.button);
                               widget.onPlay();
                             },
                             child: Container(
-                              width: 50,
-                              height: 50,
+                              width: btnSize,
+                              height: btnSize,
                               decoration: BoxDecoration(
                                 gradient: AppTheme.purpleGradient,
                                 border: Border.all(
@@ -180,23 +184,23 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(btnPad),
                                 child: SvgPicture.asset(AppImages.next),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: w * 0.02),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(btnPad),
                           child: GestureDetector(
                             onTap: () {
                               controller.playSound(Sounds.button);
                               widget.onRestart();
                             },
                             child: Container(
-                              width: 50,
-                              height: 50,
+                              width: btnSize,
+                              height: btnSize,
                               decoration: BoxDecoration(
                                 gradient: AppTheme.purpleGradient,
                                 border: Border.all(
@@ -206,23 +210,23 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(btnPad),
                                 child: SvgPicture.asset(AppImages.restart),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: w * 0.02),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(btnPad),
                           child: GestureDetector(
                             onTap: () {
                               controller.playSound(Sounds.button);
                               widget.onExit();
                             },
                             child: Container(
-                              width: 50,
-                              height: 50,
+                              width: btnSize,
+                              height: btnSize,
                               decoration: BoxDecoration(
                                 gradient: AppTheme.purpleGradient,
                                 border: Border.all(
@@ -232,7 +236,7 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(btnPad),
                                 child: SvgPicture.asset(AppImages.exit),
                               ),
                             ),
@@ -240,12 +244,11 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: w * 0.04),
                   ],
                 ),
               ),
             ),
-
           ],
         ),
       ),

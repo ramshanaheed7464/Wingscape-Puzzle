@@ -62,12 +62,15 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
 
   @override
   Widget build(BuildContext context) {
+    final w = Get.width;
+    final btnSize = w * 0.12;
+    final btnPad = w * 0.025;
+
     return Positioned.fill(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Stack(
           children: [
-            // Removed the unnecessary container wrapping the time and stars
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -76,59 +79,55 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                     clipBehavior: Clip.none,
                     fit: StackFit.passthrough,
                     children: [
-                      // Time text displayed without a container background
                       Center(
                         child: Text(
                           '00:00',
                           style: AppTheme.textTheme.copyWith(
-                            fontSize: 32,
+                            fontSize: w * 0.08,
                             decoration: TextDecoration.none,
                           ),
                         ),
                       ),
-                      // Left star
                       Positioned(
-                        left: Get.width * 0.2,
-                        bottom: Get.width * 0.2,
+                        left: w * 0.2,
+                        bottom: w * 0.2,
                         child: ClipRRect(
                           child: SvgPicture.asset(
                             AppImages.whiteStar,
                             height: Get.height * 0.1,
-                            width: Get.width * 0.17,
+                            width: w * 0.17,
                             fit: BoxFit.fill,
                           ),
                         ),
                       ),
-                      // Right star
                       Positioned(
-                        right: Get.width * 0.2,
-                        bottom: Get.width * 0.2,
+                        right: w * 0.2,
+                        bottom: w * 0.2,
                         child: ClipRRect(
                           child: SvgPicture.asset(
                             AppImages.whiteStar,
                             height: Get.height * 0.1,
-                            width: Get.width * 0.17,
+                            width: w * 0.17,
                             fit: BoxFit.fill,
                           ),
                         ),
                       ),
-                      // Center star, larger and slightly higher
                       Positioned(
-                        left: Get.width * 0.4,
-                        right: Get.width * 0.4,
-                        bottom: Get.width * 0.25,
+                        left: w * 0.4,
+                        right: w * 0.4,
+                        bottom: w * 0.25,
                         child: ClipRRect(
                           child: SvgPicture.asset(
                             AppImages.whiteStar,
                             height: Get.height * 0.13,
-                            width: Get.width * 0.15,
+                            width: w * 0.15,
                             fit: BoxFit.fill,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: w * 0.05),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -138,8 +137,8 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                           widget.onRestart();
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
+                          width: btnSize,
+                          height: btnSize,
                           decoration: BoxDecoration(
                             gradient: AppTheme.purpleGradient,
                             border: Border.all(
@@ -149,20 +148,20 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(btnPad),
                             child: SvgPicture.asset(AppImages.restart),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: w * 0.02),
                       GestureDetector(
                         onTap: () {
                           controller.playSound(Sounds.button);
                           widget.onExit();
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
+                          width: btnSize,
+                          height: btnSize,
                           decoration: BoxDecoration(
                             gradient: AppTheme.purpleGradient,
                             border: Border.all(
@@ -172,14 +171,14 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(btnPad),
                             child: SvgPicture.asset(AppImages.exit),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: w * 0.04),
                 ],
               ),
             ),
@@ -187,8 +186,8 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
               animation: _controller1,
               builder: (context, child) {
                 return Positioned(
-                  left: context.width * 0.3,
-                  top: context.width * 0.4 + 10 * sin(_controller1.value * 2 * pi),
+                  left: w * 0.3,
+                  top: w * 0.4 + 10 * sin(_controller1.value * 2 * pi),
                   child: ClipRRect(
                     child: Transform(
                       transform: Matrix4.rotationY(pi),
@@ -197,7 +196,7 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
                         opacity: 0.5,
                         child: SvgPicture.asset(
                           AppImages.bibble,
-                          height: context.width * 0.2,
+                          height: w * 0.2,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -208,13 +207,13 @@ class _IncompleteLevelCardState extends State<IncompleteLevelCard>
             ),
             Positioned(
               bottom: 0,
-              left: context.width * 0.12,
+              left: w * 0.12,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SvgPicture.asset(
                   AppImages.shell,
-                  width: context.width * 0.4,
-                  height: context.width * 0.6,
+                  width: w * 0.4,
+                  height: w * 0.6,
                   fit: BoxFit.fill,
                 ),
               ),

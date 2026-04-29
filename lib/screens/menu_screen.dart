@@ -139,16 +139,19 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 8.0, 8.0),
-                                  child: SvgPicture.asset(AppImages.play),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: width * 0.025,
+                                  top: width * 0.03,
+                                  right: width * 0.02,
+                                  bottom: width * 0.03,
                                 ),
+                                child: SvgPicture.asset(AppImages.play),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          const StyledText(text: 'Play', fontSize: 42)
+                          SizedBox(height: width * 0.04),
+                          StyledText(text: 'Play', fontSize: width * 0.1)
                         ],
                       ),
                     ],
@@ -162,6 +165,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
   void _showSettingsDialog(BuildContext context) {
+    final width = Get.width;
     Get.dialog(
       AlertDialog(
         title: Center(
@@ -180,8 +184,8 @@ class _MenuScreenState extends State<MenuScreen> {
                     controller.game.value.isSoundOn
                         ? AppImages.soundOn
                         : AppImages.soundOff,
-                    width: 24,
-                    height: 24,
+                    width: width * 0.06,
+                    height: width * 0.06,
                   ),
                   title: Text(
                     'Sound',
