@@ -79,7 +79,7 @@ class LevelCardState extends State<LevelCard> with SingleTickerProviderStateMixi
               ),
             ),
             Container(
-              color: AppTheme.blur.withOpacity(0.2),
+              color: AppTheme.blur.withValues(alpha: 0.2),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

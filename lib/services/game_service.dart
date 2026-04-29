@@ -39,7 +39,7 @@ class GameService extends GetxService implements GameRepository {
         400,
         (index) => Level(
           isLocked: index > 0,
-          isCompleted: false,
+          isComplete: false,
           stars: 0,
           number: index + 1,
           remainingTime: 0,
@@ -65,7 +65,7 @@ class GameService extends GetxService implements GameRepository {
 
   @override
   Future<void> save() async {
-    final gameJson = game.toJson();
+    final gameJson = game.value.toJson();
     await Storage.setString(_gameKey, jsonEncode(gameJson));
     game.refresh();
   }

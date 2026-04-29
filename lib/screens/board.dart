@@ -130,11 +130,13 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
 
   void refreshBoard() {
     _flyAwayController.forward().then((_) {
+      if (!mounted) return;
       setState(() {
         initializeBoard();
       });
       _flyAwayController.reset();
       _fallInController.forward().then((_) {
+        if (!mounted) return;
         _fallInController.reset();
       });
     });
@@ -346,8 +348,8 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
           decoration: BoxDecoration(
             border: Border.all(
               color: selectedPositions.contains(Offset(col.toDouble(), row.toDouble()))
-                  ? AppTheme.pink.withOpacity(0.3)
-                  : AppTheme.white.withOpacity(0.7),
+                  ? AppTheme.pink.withValues(alpha: 0.3)
+                  : AppTheme.white.withValues(alpha: 0.7),
               width: selectedPositions.contains(Offset(col.toDouble(), row.toDouble())) ? 2 : 1,
             ),
             borderRadius: BorderRadius.circular(5),
@@ -359,7 +361,9 @@ class SymbolMatchingState extends State<SymbolMatching> with TickerProviderState
                 angle: rotation,
                 child: Transform.scale(
                   scale: scale,
-                  child: Image.asset(board[row][col], fit: BoxFit.contain),
+                  child: board[row][col].isNotEmpty
+                      ? Image.asset(board[row][col], fit: BoxFit.contain)
+                      : const SizedBox(),
                 ),
               ),
             ),

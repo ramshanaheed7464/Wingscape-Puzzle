@@ -20,7 +20,7 @@ class LinePainter extends CustomPainter {
         Offset(points.first.dx * cellSize, points.first.dy * cellSize),
         Offset(points.last.dx * cellSize, points.last.dy * cellSize),
       ))
-      ..color = Colors.white.withOpacity(0.5)
+      ..color = Colors.white.withValues(alpha: 0.5)
       ..strokeWidth = 16
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10)
       ..strokeCap = StrokeCap.round

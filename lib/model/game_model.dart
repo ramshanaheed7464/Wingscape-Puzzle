@@ -17,13 +17,14 @@ class GameModel {
 
   factory GameModel.fromJson(Map<String, dynamic> json) {
     return GameModel(
-        levels: List<Level>.from(
-            json['levels'].map((level) => Level.fromJson(level))),
-        currentLevel: json['currentLevel'] ?? 0,
-        isEnSelected: json['isEnSelected'],
-        isMusicOn: json['isMusicOn'],
-        isSoundOn: json['isSoundOn'],
-        totalStars: json['totalStars']);
+      levels: List<Level>.from(
+          json['levels'].map((level) => Level.fromJson(level))),
+      currentLevel: json['currentLevel'] ?? 0,
+      isEnSelected: json['isEnSelected'] as bool? ?? true,
+      isMusicOn: json['isMusicOn'] as bool? ?? true,
+      isSoundOn: json['isSoundOn'] as bool? ?? true,
+      totalStars: json['totalStars'] as int? ?? 0,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -33,7 +34,7 @@ class GameModel {
       'isMusicOn': isMusicOn,
       'isSoundOn': isSoundOn,
       'totalStars': totalStars,
-      "currentLevel": currentLevel
+      'currentLevel': currentLevel,
     };
   }
 }
@@ -65,24 +66,22 @@ class Level {
     required this.score,
     required this.bestScore,
     this.isStopped = false,
-    required bool isCompleted,
   });
 
   factory Level.fromJson(Map<String, dynamic> json) {
     return Level(
-      number: json['number'],
-      stars: json['stars'],
-      isLocked: json['isLocked'],
-      isStarted: json['isStarted'],
-      isComplete: json['isComplete'],
-      allTargetsAchieved: json['allTargetsAchieved'],
-      remainingTime: json['remainingTime'],
-      finalTime: json['finalTime'],
-      points: json['points'],
-      score: json['score'],
-      bestScore: json['bestScore'],
-      isStopped: json['isStopped'],
-      isCompleted: false,
+      number: json['number'] as int,
+      stars: json['stars'] as int? ?? 0,
+      isLocked: json['isLocked'] as bool? ?? true,
+      isStarted: json['isStarted'] as bool? ?? false,
+      isComplete: json['isComplete'] as bool? ?? false,
+      allTargetsAchieved: json['allTargetsAchieved'] as bool? ?? false,
+      remainingTime: json['remainingTime'] as int? ?? 0,
+      finalTime: json['finalTime'] as int? ?? 0,
+      points: json['points'] as int? ?? 0,
+      score: json['score'] as int? ?? 0,
+      bestScore: json['bestScore'] as int? ?? 0,
+      isStopped: json['isStopped'] as bool? ?? false,
     );
   }
 
@@ -109,12 +108,12 @@ class Level {
 
   Level copy() {
     return Level(
-        number: number,
-        stars: stars,
-        remainingTime: remainingTime,
-        points: 0,
-        score: 0,
-        bestScore: bestScore,
-        isCompleted: false);
+      number: number,
+      stars: stars,
+      remainingTime: remainingTime,
+      points: 0,
+      score: 0,
+      bestScore: bestScore,
+    );
   }
 }
